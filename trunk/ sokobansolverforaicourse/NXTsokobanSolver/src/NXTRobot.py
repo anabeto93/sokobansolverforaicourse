@@ -5,8 +5,8 @@ Created on Sep 1, 2009
 '''
 
 from nxt.bluesock import BlueSock
-from nxt.motor import *
-from nxt.sensor import *
+from nxt.motor import * #IGNORE:W0614
+from nxt.sensor import * #IGNORE:W0614 
 
 class NXTRobot():
     """ Basic NXT robot class. Contains functions to make the
@@ -41,7 +41,7 @@ class NXTRobot():
         self._stop_motor(self.motor_left)
         self._stop_motor(self.motor_right)
     
-    def _start_motor(self, motor, speed):
+    def _start_motor(self, motor, speed): #IGNORE:R0201
         """ start the given 'motor' running at 'speed' """
         motor.power = speed
         motor.mode = MODE_MOTOR_ON
@@ -49,7 +49,7 @@ class NXTRobot():
         motor.tacho_limit = LIMIT_RUN_FOREVER
         motor.set_output_state()
         
-    def _stop_motor(self, motor):
+    def _stop_motor(self, motor): #IGNORE:R0201
         """ stop the given 'motor' """
         motor.power = 0
         motor.mode = MODE_MOTOR_ON | MODE_BRAKE
@@ -81,17 +81,17 @@ class NXTRobot():
         
 if __name__ == '__main__':
     
-    robot = NXTRobot('00:16:53:0A:56:10') 
-    if robot.host_found():
-        robot.connect()
-        robot.add_touch_sensor('touch1', PORT_1)
+    SOKOBAN_BOT = NXTRobot('00:16:53:0A:56:10') 
+    if SOKOBAN_BOT.host_found():
+        SOKOBAN_BOT.connect()
+        SOKOBAN_BOT.add_touch_sensor('touch1', PORT_1)
         while True:
-            if robot.get_sensor('touch1').get_sample():
-                robot.move_forward(100)
+            if SOKOBAN_BOT.get_sensor('touch1').get_sample():
+                SOKOBAN_BOT.move_forward(100)
                 print 'Driving forward'
             else:
-                robot.move_stop()
+                SOKOBAN_BOT.move_stop()
                 print 'Stopped driving'
-        robot.disconnect()
+        SOKOBAN_BOT.disconnect()
     else:
         print 'Unable to find robot'
