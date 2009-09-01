@@ -42,7 +42,7 @@ class NXTRobot():
         self._stop_motor(self.motor_right)
     
     def _start_motor(self, motor, speed):
-        """ start the given 'motor' running at 'speed'"""
+        """ start the given 'motor' running at 'speed' """
         motor.power = speed
         motor.mode = MODE_MOTOR_ON
         motor.run_state = RUN_STATE_RUNNING
@@ -66,7 +66,7 @@ class NXTRobot():
         self.motor_right = Motor(self.socket, port)
         
     def add_touch_sensor(self, name, port):
-        """ add touch sensor to the robot"""
+        """ add touch sensor to the robot """
         sensor = TouchSensor(self.socket, port)
         self.sensors[name] = sensor
     
