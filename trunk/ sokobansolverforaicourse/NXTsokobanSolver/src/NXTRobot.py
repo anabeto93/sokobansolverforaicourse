@@ -9,9 +9,9 @@ from nxt.motor import *
 from nxt.sensor import *
 
 class NXTRobot():
-    '''
-    classdocs
-    '''
+    """ Basic NXT robot class. Contains functions to make the
+    robot move, turn, stop.. """
+    
     def __init__(self, host):
         self.socket = BlueSock(host)
         self.sensors = {}
