@@ -15,48 +15,82 @@ class NXTRobot():
     def __init__(self, host):
         self.socket = BlueSock(host)
         self.sensors = {}
+        self.motor_left = None
+        self.motor_right = None
         
-    def HostFound(self):
+    def host_found(self):
+        """ returns true if the nxt robot with the mac address
+        , given in the constructor, has been found """
         return self.socket
         
-    def Connect(self):
+    def connect(self):
+        """ connect to the robot """
         self.socket.connect()
     
-    def Disconnect(self):
+    def disconnect(self):
+        """ disconnect from the robot """
         self.socket.close()
     
-    def SpinAround(self):
-        self.motor.power = 100
-        self.motor.mode = MODE_MOTOR_ON
-        self.motor.run_state = RUN_STATE_RUNNING
-        self.motor.tacho_limit = LIMIT_RUN_FOREVER
-        self.motor.set_output_state()
-
-    def StopSpin(self):
-        self.motor.power = 0
-        self.motor.mode = MODE_MOTOR_ON | MODE_BRAKE
-        self.motor.run_state = RUN_STATE_RUNNING
-        self.motor.tacho_limit = 0
-        self.motor.set_output_state()
-
-    def AddMotor(self, port):
-        self.motor = Motor(self.socket, port)
-        
-    def AddSensor(self, port):
-        pass
+    def move_forward(self, speed):
+        """ move the robot forward at 'speed' """
+        self._start_motor(self.motor_left, speed)
+        self._start_motor(self.motor_right, speed)
     
+    def move_stop(self):
+        """ stop the robob """
+        self._stop_motor(self.motor_left)
+        self._stop_motor(self.motor_right)
+    
+    def _start_motor(self, motor, speed):
+        """ start the given 'motor' running at 'speed'"""
+        motor.power = speed
+        motor.mode = MODE_MOTOR_ON
+        motor.run_state = RUN_STATE_RUNNING
+        motor.tacho_limit = LIMIT_RUN_FOREVER
+        motor.set_output_state()
+        
+    def _stop_motor(self, motor):
+        """ stop the given 'motor' """
+        motor.power = 0
+        motor.mode = MODE_MOTOR_ON | MODE_BRAKE
+        motor.run_state = RUN_STATE_RUNNING
+        motor.tacho_limit = 0
+        motor.set_output_state()
+
+    def add_motor_left(self, port):
+        """ add the left wheel motor the robot """
+        self.motor_left = Motor(self.socket, port)
+        
+    def add_motor_right(self, port):
+        """ add the right wheel motor the robot """
+        self.motor_right = Motor(self.socket, port)
+        
+    def add_touch_sensor(self, name, port):
+        """ add touch sensor to the robot"""
+        sensor = TouchSensor(self.socket, port)
+        self.sensors[name] = sensor
+    
+    def add_light_sensor(self, name, port):
+        """ add a light sensor to the robot """
+        sensor = LightSensor(self.socket, port)
+        self.sensors[name] = sensor
+    
+    def get_sensor(self, name):
+        """ Returns the sensor with 'name' """
+        return self.sensors[name]
+        
 if __name__ == '__main__':
     robot = NXTRobot('00:16:53:0A:56:10') 
-    if robot.HostFound():
-        robot.Connect()
-        touch = TouchSensor(x, PORT_1)
+    if robot.host_found():
+        robot.connect()
+        robot.add_touch_sensor('touch1', PORT_1)
         while True:
-            if touch.get_sample():
-                robot.SpinAround()
-                print 'span'
+            if robot.get_sensor('touch1').get_sample():
+                robot.move_forward(100)
+                print 'Driving forward'
             else:
-                robot.StopSpin()
-                print 'span not'
-        robot.Disconnect()
+                robot.move_stop()
+                print 'Stopped driving'
+        robot.disconnect()
     else:
-        print 'No NXT bricks found'
+        print 'Unable to find robot'
