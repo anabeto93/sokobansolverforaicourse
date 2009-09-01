@@ -37,7 +37,7 @@ class NXTRobot():
         self._start_motor(self.motor_right, speed)
     
     def move_stop(self):
-        """ stop the robob """
+        """ stop the robot """
         self._stop_motor(self.motor_left)
         self._stop_motor(self.motor_right)
     
