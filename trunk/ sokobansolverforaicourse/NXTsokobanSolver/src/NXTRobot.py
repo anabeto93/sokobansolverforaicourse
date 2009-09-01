@@ -80,6 +80,7 @@ class NXTRobot():
         return self.sensors[name]
         
 if __name__ == '__main__':
+    
     robot = NXTRobot('00:16:53:0A:56:10') 
     if robot.host_found():
         robot.connect()
