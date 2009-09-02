@@ -34,7 +34,7 @@ class NXTRobot():
     def move_forward(self, speed):
         """ move the robot forward at 'speed' """
         self._start_motor(self.motor_left, speed)
-        self._start_motor(self.motor_right, speed)
+        #self._start_motor(self.motor_right, speed)
     
     def move_stop(self):
         """ stop the robot """
@@ -43,11 +43,11 @@ class NXTRobot():
     
     def _start_motor(self, motor, speed): #IGNORE:R0201
         """ start the given 'motor' running at 'speed' """
-        motor.power = speed
-        motor.mode = MODE_MOTOR_ON
-        motor.run_state = RUN_STATE_RUNNING
-        motor.tacho_limit = LIMIT_RUN_FOREVER
-        motor.set_output_state()
+        self.motor_left.power = speed
+        self.motor_left.mode = MODE_MOTOR_ON
+        self.motor_left.run_state = RUN_STATE_RUNNING
+        self.motor_left.tacho_limit = LIMIT_RUN_FOREVER
+        self.motor_left.set_output_state()
         
     def _stop_motor(self, motor): #IGNORE:R0201
         """ stop the given 'motor' """
@@ -84,14 +84,12 @@ if __name__ == '__main__':
     SOKOBAN_BOT = NXTRobot('00:16:53:0A:56:10') 
     if SOKOBAN_BOT.host_found():
         SOKOBAN_BOT.connect()
-        SOKOBAN_BOT.add_touch_sensor('touch1', PORT_1)
+        SOKOBAN_BOT.add_motor_left(PORT_B)
+        SOKOBAN_BOT.add_motor_right(PORT_C)
+        print 'Connected'
+#        SOKOBAN_BOT.add_touch_sensor('touch1', PORT_1)
         while True:
-            if SOKOBAN_BOT.get_sensor('touch1').get_sample():
-                SOKOBAN_BOT.move_forward(100)
-                print 'Driving forward'
-            else:
-                SOKOBAN_BOT.move_stop()
-                print 'Stopped driving'
-        SOKOBAN_BOT.disconnect()
+ #           if SOKOBAN_BOT.get_sensor('touch1').get_sample():
+            SOKOBAN_BOT.move_forward(100)
     else:
         print 'Unable to find robot'
