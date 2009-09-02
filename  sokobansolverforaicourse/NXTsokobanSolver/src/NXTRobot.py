@@ -68,7 +68,7 @@ class NXTRobot():
         self.motor_hook.power = -100
         self.motor_hook.mode = MODE_MOTOR_ON | MODE_BRAKE
         self.motor_hook.run_state = RUN_STATE_RUNNING
-        self.motor_hook.tacho_limit = -2000
+        self.motor_hook.tacho_limit = 0
         for i in xrange(200): 
             self.motor_hook.set_output_state()  
         self.motor_hook.reset_position(0)
@@ -103,20 +103,24 @@ class NXTRobot():
         return self.sensors[name]
         
 if __name__ == '__main__':
-    
     SOKOBAN_BOT = NXTRobot('00:16:53:0A:56:10') 
-    if SOKOBAN_BOT.host_found():
-        SOKOBAN_BOT.add_motor_left(PORT_B)
-        SOKOBAN_BOT.add_motor_right(PORT_C)
-        SOKOBAN_BOT.add_motor_hook(PORT_A)
-        SOKOBAN_BOT.add_touch_sensor('touch1', PORT_1)
-        print 'Connected to robot'
-        while True:
-            if SOKOBAN_BOT.get_sensor('touch1').get_sample():
-                SOKOBAN_BOT.hook_grab()
-                print SOKOBAN_BOT.motor_hook.get_output_state()
-            else:
-                SOKOBAN_BOT.hook_stop()
-                print SOKOBAN_BOT.motor_hook.get_output_state()
-    else:
-        print 'Unable to find robot'
+    try:
+        if SOKOBAN_BOT.host_found():
+            SOKOBAN_BOT.add_motor_left(PORT_B)
+            SOKOBAN_BOT.add_motor_right(PORT_C)
+            SOKOBAN_BOT.add_motor_hook(PORT_A)
+            SOKOBAN_BOT.add_touch_sensor('touch1', PORT_1)
+            print 'Connected to robot'
+            while True:
+                if SOKOBAN_BOT.get_sensor('touch1').get_sample():
+                    SOKOBAN_BOT.hook_grab()
+                    print SOKOBAN_BOT.motor_hook.get_output_state()
+                else:
+                    SOKOBAN_BOT.hook_stop()
+                    print SOKOBAN_BOT.motor_hook.get_output_state()
+        else:
+            print 'Unable to find robot'
+    except (KeyboardInterrupt, SystemExit):
+        SOKOBAN_BOT.move_stop()
+        SOKOBAN_BOT.disconnect()
+        raise
