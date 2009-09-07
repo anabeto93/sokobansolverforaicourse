@@ -6,7 +6,9 @@ Created on Sep 1, 2009
 
 from nxt.bluesock import BlueSock
 from nxt.motor import * #IGNORE:W0614
-from nxt.sensor import * #IGNORE:W0614 
+from nxt.sensor import * #IGNORE:W0614
+import pygame
+from pygame.locals import *
 
 class NXTRobot():
     """ Basic NXT robot class. Contains functions to make the
@@ -101,8 +103,31 @@ class NXTRobot():
     def get_sensor(self, name):
         """ Returns the sensor with 'name' """
         return self.sensors[name]
+    
+class Movement():
+    def __init__(self, physicalMover, virtualMover):       
+        self.physicalMover = physicalMover
+        self.virtualMover = virtualMover
         
-if __name__ == '__main__':
+    def move_forward(self):
+        if self.physicalMover != None:
+            self.physicalMover.move_forward()
+        if self.virtualMover != None:
+            self.virtualMover.move_forward()
+
+class Mover():
+    def move_forward(self):
+        raise "not implemented"
+    
+class MovementPhysical(Mover):
+    def move_forward(self):
+        print 'moving'
+    
+class MovementVirtual(Mover):    
+    def move_forward(self):
+        print 'moving'
+    
+def main_run_1():
     SOKOBAN_BOT = NXTRobot('00:16:53:0A:56:10') 
     try:
         if SOKOBAN_BOT.host_found():
@@ -124,3 +149,10 @@ if __name__ == '__main__':
         SOKOBAN_BOT.move_stop()
         SOKOBAN_BOT.disconnect()
         raise
+
+def main_temp():
+    x = Movement(MovementPhysical(), MovementVirtual())
+    x.move_forward()
+        
+if __name__ == '__main__':
+    main_temp()
