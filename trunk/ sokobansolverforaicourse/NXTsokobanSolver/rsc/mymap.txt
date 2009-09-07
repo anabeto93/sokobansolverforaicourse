@@ -1,0 +1,17 @@
+10 11 5
+XXXXX  
+X...XXXXX 
+X.J.J.J.X  
+XXX.X.X.X   
+  X.X...X   
+ XX.XXX.XX        
+ X.GGG.G.X 
+ X..MG.J.X  
+ X.XXX.XXX     
+ X.....X
+ XXXXXXX  
+
+
+
+
+    

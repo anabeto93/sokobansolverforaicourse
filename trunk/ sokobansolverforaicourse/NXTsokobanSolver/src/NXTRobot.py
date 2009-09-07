@@ -176,6 +176,7 @@ class Map():
 class Painter(threading.Thread):
     def __init__(self, map):
         threading.Thread.__init__(self)
+        self.daemon = True
         pygame.init() 
         self.map = map
         self.screen = pygame.display.set_mode((self.map.man[0].img.get_width()*self.map.width, self.map.man[0].img.get_height()*self.map.height))
