@@ -23,6 +23,10 @@ class NXTRobot():
         self.motor_left = None
         self.motor_right = None
         self.motor_hook = None
+
+    def __del__(self):
+        self.move_stop()
+        self.disconnect()
         
     def host_found(self):
         """ returns true if the nxt robot with the mac address
@@ -33,10 +37,10 @@ class NXTRobot():
         """ disconnect from the robot """
         self.socket.close()
     
-    def move_up(self, speed):
+    def move_up(self, motor_left_speed = 65, motor_right_speed = 65):
         """ move the robot forward at 'speed' """
-        self._start_motor(self.motor_left, speed)
-        self._start_motor(self.motor_right, speed)
+        self._start_motor(self.motor_left, motor_left_speed)
+        self._start_motor(self.motor_right, motor_right_speed)
     
     def move_stop(self):
         """ stop the robot """
@@ -57,6 +61,7 @@ class NXTRobot():
         motor.mode = MODE_MOTOR_ON
         motor.run_state = RUN_STATE_RUNNING
         motor.tacho_limit = LIMIT_RUN_FOREVER
+        motor.regulation = REGULATION_MOTOR_SYNC
         motor.set_output_state()
         
     def _stop_motor(self, motor): #IGNORE:R0201
@@ -125,16 +130,19 @@ class Movement():
             self.physicalMover.move_up()
         if self.virtualMover != None:
             self.virtualMover.move_up()
+    
     def move_left(self):
         if self.physicalMover != None:
             self.physicalMover.move_left()
         if self.virtualMover != None:
             self.virtualMover.move_left()     
+    
     def move_right(self):
         if self.physicalMover != None:
             self.physicalMover.move_right()
         if self.virtualMover != None:
             self.virtualMover.move_right()   
+    
     def move_down(self):
         if self.physicalMover != None:
             self.physicalMover.move_down()
@@ -144,10 +152,13 @@ class Movement():
 class Mover():
     def move_up(self):
         raise "not implemented"
+    
     def move_down(self):
         raise "not implemented"
+    
     def move_left(self):
         raise "not implemented"
+    
     def move_right(self):
         raise "not implemented"
 
@@ -159,6 +170,7 @@ class MovementPhysical(Mover):
 class MovementVirtual(Mover):   
     def __init__(self, map):
         self.map = map
+    
     def move_up(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x,self.map.man[0].y-1)
         if jewel != None:
@@ -166,6 +178,7 @@ class MovementVirtual(Mover):
         self.map.man[0].y = self.map.man[0].y-1
         self.map.man[0].img = self.map.man[0].img_up
         print 'moving up'
+    
     def move_down(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x,self.map.man[0].y+1)
         if jewel != None:
@@ -173,6 +186,7 @@ class MovementVirtual(Mover):
         self.map.man[0].y = self.map.man[0].y+1
         self.map.man[0].img = self.map.man[0].img_down
         print 'moving down'
+    
     def move_left(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x-1,self.map.man[0].y)
         if jewel != None:
@@ -180,6 +194,7 @@ class MovementVirtual(Mover):
         self.map.man[0].x = self.map.man[0].x-1
         self.map.man[0].img = self.map.man[0].img_left
         print 'moving left'
+    
     def move_right(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x+1,self.map.man[0].y)
         if jewel != None:
@@ -228,11 +243,13 @@ class Map():
         self.width = int(values[0])
         self.height = int(values[1])
         self.goals = int(values[2])
+    
     def _get_map_point(self, x, y):
         try:
             return self.textfile[y+1][x]
         except:
             return ' '
+
     def check_for_obstacle(self, x, y):
         obstacle = self.check_for_brick(x,y)
         if obstacle == None:
@@ -249,11 +266,13 @@ class Map():
             if brick.y == y and brick.x == x:
                 return brick
         return None
+    
     def check_for_goal(self, x, y):
         for goal in self.goals:
             if goal.y == y and goal.x == x:
                 return goal
         return None
+
 class Painter(threading.Thread):
     def __init__(self, map):
         threading.Thread.__init__(self)
@@ -283,16 +302,35 @@ def main_temp0():
     SOKOBAN_BOT = NXTRobot('00:16:53:0A:56:10') 
     try:
         if SOKOBAN_BOT.host_found():
-            SOKOBAN_BOT.add_motor_left(PORT_B)
+            SOKOBAN_BOT.add_motor_left(PORT_A)
             SOKOBAN_BOT.add_motor_right(PORT_C)
-            SOKOBAN_BOT.add_motor_hook(PORT_A)
             SOKOBAN_BOT.add_touch_sensor('touch1', PORT_4)
+            SOKOBAN_BOT.add_light_sensor('light_left', PORT_1)
+            SOKOBAN_BOT.add_light_sensor('light_right', PORT_3)
+            SOKOBAN_BOT.add_light_sensor('light_middle', PORT_2)
             print 'Connected to robot'
+            
+            motor_left_speed = 127.0
+            motor_right_speed = 127.0
+            matfile = open('./output_fast.dat', 'wr')
+            
             while True:
-                if SOKOBAN_BOT.get_sensor('touch1').get_sample():
-                    SOKOBAN_BOT.move_turn_left()
+                light_left = SOKOBAN_BOT.get_sensor('light_left').get_sample()
+                light_right = SOKOBAN_BOT.get_sensor('light_right').get_sample()
+                light_middle = SOKOBAN_BOT.get_sensor('light_middle').get_sample()
+                matfile.write(str(light_left) + ',' + str(light_middle) + ',' + str(light_right) + '\n')
+                matfile.flush()
+                if light_middle < 400 and light_right > 400 and light_left > 400:
+                    print 'MIDDLE'
+                elif light_right < 400 and light_left > 400:
+                    print 'RIGHT'
                 else:
-                    SOKOBAN_BOT.move_stop()   
+                    print 'LOST'    
+                #print 'ML:', motor_left_speed, 'MR:', motor_right_speed, 'LL:', light_left_value, 'LR:', light_right_value
+                SOKOBAN_BOT.move_up(motor_left_speed, motor_right_speed)
+                
+                #print 'RIGHT LIGHT', SOKOBAN_BOT.get_sensor('light_right').get_sample()
+                #print 'MIDDLE LIGHT', SOKOBAN_BOT.get_sensor('light_middle').get_sample()
         else:
             print 'Unable to find robot'
     except (KeyboardInterrupt, SystemExit):
