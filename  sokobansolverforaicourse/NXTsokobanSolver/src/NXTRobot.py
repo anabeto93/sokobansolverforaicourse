@@ -42,7 +42,15 @@ class NXTRobot():
         """ stop the robot """
         self._stop_motor(self.motor_left)
         self._stop_motor(self.motor_right)
-    
+        
+    def move_turn_left(self, speed = 65):
+        self._start_motor(self.motor_left, -speed)
+        self._start_motor(self.motor_right, speed)
+        
+    def move_turn_right(self, speed = 65):
+        self._start_motor(self.motor_left, speed)
+        self._start_motor(self.motor_right, -speed)
+        
     def _start_motor(self, motor, speed): #IGNORE:R0201
         """ start the given 'motor' running at 'speed' """
         motor.power = speed
@@ -271,22 +279,20 @@ class Painter(threading.Thread):
         while True:
             self.draw()
             time.sleep(0.5)
-def main_run_1():
+def main_temp0():
     SOKOBAN_BOT = NXTRobot('00:16:53:0A:56:10') 
     try:
         if SOKOBAN_BOT.host_found():
             SOKOBAN_BOT.add_motor_left(PORT_B)
             SOKOBAN_BOT.add_motor_right(PORT_C)
             SOKOBAN_BOT.add_motor_hook(PORT_A)
-            SOKOBAN_BOT.add_touch_sensor('touch1', PORT_1)
+            SOKOBAN_BOT.add_touch_sensor('touch1', PORT_4)
             print 'Connected to robot'
             while True:
                 if SOKOBAN_BOT.get_sensor('touch1').get_sample():
-                    SOKOBAN_BOT.hook_grab()
-                    print SOKOBAN_BOT.motor_hook.get_output_state()
+                    SOKOBAN_BOT.move_turn_left()
                 else:
-                    SOKOBAN_BOT.hook_stop()
-                    print SOKOBAN_BOT.motor_hook.get_output_state()
+                    SOKOBAN_BOT.move_stop()   
         else:
             print 'Unable to find robot'
     except (KeyboardInterrupt, SystemExit):
@@ -316,4 +322,4 @@ def main_temp2():
  #   tusch.draw()
     raw_input()
 if __name__ == '__main__':
-    main_temp2()
+    main_temp0()
