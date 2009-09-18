@@ -1,0 +1,62 @@
+% article document class appropriate for small (<100 pages) documents
+\documentclass[draft, english, a4paper]{article}
+
+% Packages provide additional functionality
+%\usepackage{url}
+\usepackage{fixme}
+%\usepackage{lmodern}
+\usepackage[utf8]{inputenc}
+\usepackage[left=3cm,top=4cm,right=3cm]{geometry}
+\usepackage[dvips,
+            colorlinks=false,
+            pdfduplex=DuplexFlipLongEdge,
+            pdfborder={0 0 0},
+            pdftitle={Playing with LEGO},
+            pdfauthor={Mikael Moghadam, Kenni Peter Isaksen, Morten S. Laursen,
+                Robot Technology,
+                SDU,
+                Odense,
+                Danmark},
+            pdfsubject={Introduction to Artificial Intelligence},
+            pdfkeywords={LEGO, Sokoban, line follow},
+            plainpages=false
+            ]{hyperref}
+
+\title{Playing with LEGO}
+\author{Mikael Moghadam, Kenni Peter Isaksen, Morten S. Laursen}
+
+\begin{document}
+
+\maketitle % reads info from \title and \author above
+
+
+% where BibTeX should read the bibliography records from and what
+% style of bibliography it should generate
+%\bibliographystyle{plain}
+%\bibliography{}
+\chapter{Introduction}
+\newpage
+\chapter{Architecture}
+	\section{Division of responsibilities}
+\chapter{Robot description}
+	\section{Architecture}
+		\subsection{Interpreter} %Morten
+		\subsection{Field navigation} %Morten
+		\subsection{Line follow} %Morten
+			\subsubsection{Statemachine based}
+			\subsubsection{Control loop based}
+		\subsection{Physical aspects} %Morten
+	\section{Conclusion} %Morten
+\chapter{Planner description}
+	\section{Problem discussion, in the Sokoban domain} %Mikael
+	\section{Discussion of path finding algorithms} %Mikael
+		\subsection{Selection of algorithm}
+	\section{Map representation} %Mikael
+	\section{Algorithm design}
+	\section{Performance evaluation}
+	\section{conclusion}
+\chapter{Conclusion}
+\chapter{Discussion}
+\appendix
+\end{document}
+
