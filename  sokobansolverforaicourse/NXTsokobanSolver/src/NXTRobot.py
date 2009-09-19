@@ -4,121 +4,11 @@ Created on Sep 1, 2009
 @author: zagnut
 '''
 
-from nxt.bluesock import BlueSock
-from nxt.motor import * #IGNORE:W0614
-from nxt.sensor import * #IGNORE:W0614
 import pygame
 from pygame.locals import *
 import time
 import threading
-
-
-class NXTRobot():
-    """ Basic NXT robot class. Contains functions to make the
-    robot move, turn, stop.. """
-    
-    def __init__(self, host):
-        self.socket = BlueSock(host).connect()
-        self.sensors = {}
-        self.motor_left = None
-        self.motor_right = None
-        self.motor_hook = None
-
-    def __del__(self):
-        self.move_stop()
-        self.disconnect()
-        
-    def host_found(self):
-        """ returns true if the nxt robot with the mac address
-        , given in the constructor, has been found """
-        return self.socket
-        
-    def disconnect(self):
-        """ disconnect from the robot """
-        self.socket.close()
-    
-    def move_up(self, motor_left_speed = 65, motor_right_speed = 65):
-        """ move the robot forward at 'speed' """
-        self._start_motor(self.motor_left, motor_left_speed)
-        self._start_motor(self.motor_right, motor_right_speed)
-    
-    def move_stop(self):
-        """ stop the robot """
-        self._stop_motor(self.motor_left)
-        self._stop_motor(self.motor_right)
-        
-    def move_turn_left(self, speed = 65):
-        self._start_motor(self.motor_left, -speed)
-        self._start_motor(self.motor_right, speed)
-        
-    def move_turn_right(self, speed = 65):
-        self._start_motor(self.motor_left, speed)
-        self._start_motor(self.motor_right, -speed)
-        
-    def _start_motor(self, motor, speed): #IGNORE:R0201
-        """ start the given 'motor' running at 'speed' """
-        motor.power = speed
-        motor.mode = MODE_MOTOR_ON
-        motor.run_state = RUN_STATE_RUNNING
-        motor.tacho_limit = LIMIT_RUN_FOREVER
-        motor.regulation = REGULATION_MOTOR_SYNC
-        motor.set_output_state()
-        
-    def _stop_motor(self, motor): #IGNORE:R0201
-        """ stop the given 'motor' """
-        motor.power = 0
-        motor.mode = MODE_MOTOR_ON | MODE_BRAKE
-        motor.run_state = RUN_STATE_RUNNING
-        motor.tacho_limit = 0
-        motor.set_output_state()
-
-    def add_motor_left(self, port):
-        """ add the left wheel motor the robot """
-        self.motor_left = Motor(self.socket, port)
-        
-    def add_motor_right(self, port):
-        """ add the right wheel motor the robot """
-        self.motor_right = Motor(self.socket, port)
-        
-    def add_motor_hook(self, port):
-        self.motor_hook = Motor(self.socket, port)
-        #self.motor_hook.tacho_count = 0
-        self.motor_hook.power = -100
-        self.motor_hook.mode = MODE_MOTOR_ON | MODE_BRAKE
-        self.motor_hook.run_state = RUN_STATE_RUNNING
-        self.motor_hook.tacho_limit = 0
-        for i in xrange(200): 
-            self.motor_hook.set_output_state()  
-        self.motor_hook.reset_position(0)
-        self.motor_hook.set_output_state()
-        
-    def hook_grab(self):
-        self.motor_hook.power = 100
-        self.motor_hook.mode = MODE_MOTOR_ON | MODE_BRAKE
-        self.motor_hook.run_state = RUN_STATE_RUNNING
-        self.motor_hook.tacho_limit = -2000
-        self.motor_hook.set_output_state()        
-    
-    def hook_stop(self):
-        self.motor_hook.power = 0
-        self.motor_hook.mode = MODE_MOTOR_ON | MODE_BRAKE
-        self.motor_hook.run_state = RUN_STATE_RUNNING
-        self.motor_hook.tacho_limit = -2000
-        self.motor_hook.set_output_state() 
-        
-    def add_touch_sensor(self, name, port):
-        """ add touch sensor to the robot """
-        sensor = TouchSensor(self.socket, port)
-        self.sensors[name] = sensor
-    
-    def add_light_sensor(self, name, port):
-        """ add a light sensor to the robot """
-        sensor = LightSensor(self.socket, port)
-        self.sensors[name] = sensor
-    
-    def get_sensor(self, name):
-        """ Returns the sensor with 'name' """
-        return self.sensors[name]
+import os
     
 class Movement():
     def __init__(self, physicalMover, virtualMover):       
@@ -221,7 +111,6 @@ class Map():
         #print 'WIDTH:', self.width, 'HEIGHT:', self.height, 'GOALS:', self.goals
         #for t in self.textfile:
         #    print t
-        
         self.man = []
         self.jewels = []
         self.goals = []
@@ -230,13 +119,13 @@ class Map():
             for j in xrange(self.height):
                 point = self._get_map_point(i,j)
                 if point == 'X':
-                    self.bricks.append(Sprite(i,j,'../gfx/brick.bmp'))
+                    self.bricks.append(Sprite(i,j, get_full_path('/gfx/brick.bmp')))
                 elif point == 'J':
-                    self.jewels.append(Sprite(i,j,'../gfx/jewel.bmp'))
+                    self.jewels.append(Sprite(i,j, get_full_path('/gfx/jewel.bmp')))
                 elif point == 'M':
-                    self.man.append(Sprite(i,j,'../gfx/man.bmp', '../gfx/man_up.bmp', '../gfx/man_down.bmp', '../gfx/man_left.bmp', '../gfx/man_right.bmp'))
+                    self.man.append(Sprite(i,j, get_full_path('/gfx/man.bmp'),  get_full_path('/gfx/man_up.bmp'), get_full_path('/gfx/man_down.bmp'), get_full_path('/gfx/man_left.bmp'), get_full_path('/gfx/man_right.bmp')))
                 elif point == 'G':
-                    self.goals.append(Sprite(i,j,'../gfx/goal.bmp'))
+                    self.goals.append(Sprite(i,j, get_full_path('/gfx/goal.bmp')))
 
     def _getMapProperties(self):
         values = self.textfile[0].split(' ')
@@ -281,6 +170,7 @@ class Painter(threading.Thread):
         self.map = map
         self.screen = pygame.display.set_mode((self.map.man[0].img.get_width()*self.map.width, self.map.man[0].img.get_height()*self.map.height))
         pygame.display.set_caption('SokoHero')
+        
     def draw(self):
         self.background = pygame.Surface(self.screen.get_size())
         self.background = self.background.convert()
@@ -294,57 +184,23 @@ class Painter(threading.Thread):
         for sprite in sprites:
             self.screen.blit(sprite.img, (sprite.x*sprite.img.get_width(),sprite.y*sprite.img.get_height()))
         pygame.display.flip()
+        
     def run(self):
         while True:
             self.draw()
             time.sleep(0.5)
-def main_temp0():
-    SOKOBAN_BOT = NXTRobot('00:16:53:0A:56:10') 
-    try:
-        if SOKOBAN_BOT.host_found():
-            SOKOBAN_BOT.add_motor_left(PORT_A)
-            SOKOBAN_BOT.add_motor_right(PORT_C)
-            SOKOBAN_BOT.add_touch_sensor('touch1', PORT_4)
-            SOKOBAN_BOT.add_light_sensor('light_left', PORT_1)
-            SOKOBAN_BOT.add_light_sensor('light_right', PORT_3)
-            SOKOBAN_BOT.add_light_sensor('light_middle', PORT_2)
-            print 'Connected to robot'
-            
-            motor_left_speed = 127.0
-            motor_right_speed = 127.0
-            matfile = open('./output_fast.dat', 'wr')
-            
-            while True:
-                light_left = SOKOBAN_BOT.get_sensor('light_left').get_sample()
-                light_right = SOKOBAN_BOT.get_sensor('light_right').get_sample()
-                light_middle = SOKOBAN_BOT.get_sensor('light_middle').get_sample()
-                matfile.write(str(light_left) + ',' + str(light_middle) + ',' + str(light_right) + '\n')
-                matfile.flush()
-                if light_middle < 400 and light_right > 400 and light_left > 400:
-                    print 'MIDDLE'
-                elif light_right < 400 and light_left > 400:
-                    print 'RIGHT'
-                else:
-                    print 'LOST'    
-                #print 'ML:', motor_left_speed, 'MR:', motor_right_speed, 'LL:', light_left_value, 'LR:', light_right_value
-                SOKOBAN_BOT.move_up(motor_left_speed, motor_right_speed)
-                
-                #print 'RIGHT LIGHT', SOKOBAN_BOT.get_sensor('light_right').get_sample()
-                #print 'MIDDLE LIGHT', SOKOBAN_BOT.get_sensor('light_middle').get_sample()
-        else:
-            print 'Unable to find robot'
-    except (KeyboardInterrupt, SystemExit):
-        SOKOBAN_BOT.move_stop()
-        SOKOBAN_BOT.disconnect()
-        raise
-
+def get_full_path(relative_path):
+        return os.path.dirname(os.path.dirname(os.path.abspath( __file__ ))) + relative_path
+        
 def main_temp():
     x = Movement(MovementPhysical(), MovementVirtual())
     x.move_up()
     raw_input()
+    
 def main_temp2():
     pygame.display.set_mode()
-    t = Map('../rsc/mymap.txt')
+
+    t = Map(get_full_path('/rsc/mymap.txt'))
     x = Movement(None, MovementVirtual(t))
     tusch = Painter(t)
     tusch.start()
@@ -359,5 +215,6 @@ def main_temp2():
     x.move_down()
  #   tusch.draw()
     raw_input()
+    
 if __name__ == '__main__':
-    main_temp0()
+    main_temp2()
