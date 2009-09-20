@@ -223,7 +223,7 @@ class AStarSearch():
         self.goal = node
     
     def set_starting_position(self, node):
-        self.open_list.append(node)
+        self.node_start = node
     
     def __get_node_cost(self, node_current, node_to_cost):
         x_curr = node_current.point[0]
@@ -244,32 +244,16 @@ class AStarSearch():
         y = node.point[1]
         
         #Finding the following points:
-        
-        #NW N NE
-        #W  +  E
-        #SW S SE
-        
         points = []
-        
         #North
         points.append((x, y + 1))
-        #North-West
-        #points.append((x - 1, y + 1))
-        #North-East
-        #points.append((x + 1, y + 1))
-        
         #West
         points.append((x - 1, y))
         #East
         points.append((x + 1, y))
-        
         #South
         points.append((x, y - 1))
-        #South-West
-        #points.append((x - 1 , y - 1))
-        #South-East
-        #points.append((x + 1, y - 1))
-        
+
         nodes = []
         for point in points:
             type = self.map.get_map_point(point[0], point[1])
@@ -300,10 +284,10 @@ class AStarSearch():
     def do_search(self):
         goal_reached = False
         open_list_empty = False
+        self.open_list.append(self.node_start)
         
         while not (goal_reached or open_list_empty):
             node_current = self.open_list[0]
-            
             self.closed_list.append(node_current)
             self.open_list.remove(node_current)
             surrounding_nodes = self.__get_surrounding_nodes(node_current)
@@ -315,11 +299,11 @@ class AStarSearch():
                         self.open_list[i].cost = node.cost
                         self.open_list[i].heuristic = node.heuristic
                         self.open_list[i].parent = node.parent
-                i = self.__is_node_in_list(node, self.closed_list)
-                if i == False:
+                if not self.__is_node_in_list(node, self.closed_list):
                     self.open_list.append(node)
                     #Check to see if it was the goal node
                     if node == self.goal:
+                        self.closed_list.append(node)
                         goal_reached = True
                         
             if len(self.open_list) == 0:
@@ -334,6 +318,9 @@ class AStarSearch():
                 self.map.man[0].x = step.point[0]
                 self.map.man[0].y = step.point[1]
                 time.sleep(0.6)
+                
+        self.open_list = []
+        self.closed_list = []
         time.sleep(1)
             
 def main_temp():
@@ -346,15 +333,18 @@ def main_temp2():
     soko_map = Map(get_full_path('/rsc/mymap.txt'))
     search = AStarSearch(soko_map)
     
-    goal = (1,2)
+    goal = (1, 2)
     start = soko_map.get_object_position('M')
     
-    #mover = Movement(None, MovementVirtual(soko_map))
     tusch = Painter(soko_map)
     tusch.start()
     
     search.set_goal(Node(goal))
     search.set_starting_position(Node(start))
+    search.do_search()
+    
+    search.set_goal(Node((8,7)))
+    search.set_starting_position(Node(goal))
     search.do_search()
     #raw_input()
     
