@@ -256,7 +256,7 @@ class AStarSearch():
         #North-West
         #points.append((x - 1, y + 1))
         #North-East
-       #points.append((x + 1, y + 1))
+        #points.append((x + 1, y + 1))
         
         #West
         points.append((x - 1, y))
