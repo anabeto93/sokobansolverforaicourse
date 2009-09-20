@@ -9,7 +9,11 @@ from pygame.locals import *
 import time
 import threading
 import os
-    
+import math
+
+def get_full_path(relative_path):
+        return os.path.dirname(os.path.dirname(os.path.abspath( __file__ ))) + relative_path
+
 class Movement():
     def __init__(self, physicalMover, virtualMover):       
         self.physicalMover = physicalMover
@@ -115,9 +119,10 @@ class Map():
         self.jewels = []
         self.goals = []
         self.bricks = []
+        
         for i in xrange(self.width):
             for j in xrange(self.height):
-                point = self._get_map_point(i,j)
+                point = self.get_map_point(i,j)
                 if point == 'X':
                     self.bricks.append(Sprite(i,j, get_full_path('/gfx/brick.bmp')))
                 elif point == 'J':
@@ -133,12 +138,19 @@ class Map():
         self.height = int(values[1])
         self.goals = int(values[2])
     
-    def _get_map_point(self, x, y):
+    def get_map_point(self, x, y):
         try:
             return self.textfile[y+1][x]
         except:
             return ' '
-
+                
+    def get_object_position(self, type):
+        for x in xrange(self.width):
+            for y in xrange(self.height):
+                if self.get_map_point(x, y) == type:
+                    return (x, y)
+        return None
+                
     def check_for_obstacle(self, x, y):
         obstacle = self.check_for_brick(x,y)
         if obstacle == None:
@@ -150,6 +162,7 @@ class Map():
             if jewel.y == y and jewel.x == x:
                 return jewel
         return None
+    
     def check_for_brick(self, x, y):
         for brick in self.bricks:
             if brick.y == y and brick.x == x:
@@ -189,9 +202,140 @@ class Painter(threading.Thread):
         while True:
             self.draw()
             time.sleep(0.5)
-def get_full_path(relative_path):
-        return os.path.dirname(os.path.dirname(os.path.abspath( __file__ ))) + relative_path
+
+class Node():
+    def __init__(self, point, parent = None, score = None, cost = None, heuristics = None): 
+        self.parent = parent
+        self.point = point
+        self.score = score
+    
+    def __eq__(self, other):
+        return (self.point[0] == other.point[0] and self.point[1] == other.point[1])
         
+        
+class AStarSearch():
+    def __init__(self, map):
+        self.map = map
+        self.open_list = []
+        self.closed_list = []
+
+    def set_goal(self, node):
+        self.goal = node
+    
+    def set_starting_position(self, node):
+        self.open_list.append(node)
+    
+    def __get_node_cost(self, node_current, node_to_cost):
+        x_curr = node_current.point[0]
+        y_curr = node_current.point[1]
+        x_cost = node_to_cost.point[0]
+        y_cost = node_to_cost.point[1]        
+        return math.sqrt(abs(x_cost - x_curr)**2 + abs(y_cost - y_curr)**2)
+    
+    def __get_node_heuristic(self, node_goal, node_to_heuristic):
+        x_goal = node_goal.point[0]
+        y_goal = node_goal.point[1]
+        x_heu = node_to_heuristic.point[0]
+        y_heu = node_to_heuristic.point[1]        
+        return math.sqrt(abs(x_heu - x_goal)**2 + abs(y_heu - y_goal)**2)        
+        
+    def __get_surrounding_nodes(self, node):
+        x = node.point[0]
+        y = node.point[1]
+        
+        #Finding the following points:
+        
+        #NW N NE
+        #W  +  E
+        #SW S SE
+        
+        points = []
+        
+        #North
+        points.append((x, y + 1))
+        #North-West
+        #points.append((x - 1, y + 1))
+        #North-East
+       #points.append((x + 1, y + 1))
+        
+        #West
+        points.append((x - 1, y))
+        #East
+        points.append((x + 1, y))
+        
+        #South
+        points.append((x, y - 1))
+        #South-West
+        #points.append((x - 1 , y - 1))
+        #South-East
+        #points.append((x + 1, y - 1))
+        
+        nodes = []
+        for point in points:
+            type = self.map.get_map_point(point[0], point[1])
+            if type == '.' or type == 'G':
+                nodes.append(Node(point, node))   
+        return nodes
+    
+    def __score_nodes(self, node_current, surrounding_nodes):
+        for node in surrounding_nodes:
+            node.cost = self.__get_node_cost(node_current, node)
+            node.heuristic = self.__get_node_heuristic(self.goal, node)
+            node.score = node.cost + node.heuristic
+    
+    def __score_compare(self, node_a, node_b):
+        if node_a.score > node_b.score:
+            return 1
+        elif node_a.score == node_b.score:
+            return 0
+        else:
+            return -1
+        
+    def __is_node_in_list(self, node_to_check, node_list):
+        for i, node in enumerate(node_list):
+            if node == node_to_check:
+                return i
+        return False
+    
+    def do_search(self):
+        goal_reached = False
+        open_list_empty = False
+        
+        while not (goal_reached or open_list_empty):
+            node_current = self.open_list[0]
+            
+            self.closed_list.append(node_current)
+            self.open_list.remove(node_current)
+            surrounding_nodes = self.__get_surrounding_nodes(node_current)
+            self.__score_nodes(node_current, surrounding_nodes)
+            for node in surrounding_nodes:
+                i = self.__is_node_in_list(node, self.open_list)
+                if i != False:
+                    if node.cost < self.open_list[i].cost:
+                        self.open_list[i].cost = node.cost
+                        self.open_list[i].heuristic = node.heuristic
+                        self.open_list[i].parent = node.parent
+                i = self.__is_node_in_list(node, self.closed_list)
+                if i == False:
+                    self.open_list.append(node)
+                    #Check to see if it was the goal node
+                    if node == self.goal:
+                        goal_reached = True
+                        
+            if len(self.open_list) == 0:
+                print 'Could not reach goal'
+                open_list_empty = True
+                
+            self.open_list.sort(cmp = self.__score_compare)
+    
+        if goal_reached:
+            for step in self.closed_list:
+                print step.point
+                self.map.man[0].x = step.point[0]
+                self.map.man[0].y = step.point[1]
+                time.sleep(0.6)
+        time.sleep(1)
+            
 def main_temp():
     x = Movement(MovementPhysical(), MovementVirtual())
     x.move_up()
@@ -199,22 +343,20 @@ def main_temp():
     
 def main_temp2():
     pygame.display.set_mode()
-
-    t = Map(get_full_path('/rsc/mymap.txt'))
-    x = Movement(None, MovementVirtual(t))
-    tusch = Painter(t)
+    soko_map = Map(get_full_path('/rsc/mymap.txt'))
+    search = AStarSearch(soko_map)
+    
+    goal = (1,2)
+    start = soko_map.get_object_position('M')
+    
+    #mover = Movement(None, MovementVirtual(soko_map))
+    tusch = Painter(soko_map)
     tusch.start()
- #   tusch.draw()
-    time.sleep(3)
-    x.move_right()
-    time.sleep(1)
-    x.move_right()
-    time.sleep(1)
-    x.move_right()
-    time.sleep(1)
-    x.move_down()
- #   tusch.draw()
-    raw_input()
+    
+    search.set_goal(Node(goal))
+    search.set_starting_position(Node(start))
+    search.do_search()
+    #raw_input()
     
 if __name__ == '__main__':
     main_temp2()
