@@ -1,0 +1,18 @@
+1\section{Map representation}
+The particular Sokoban puzzle that must be solved by the robot, is handed out beforehand in a textual format. An example of this textual format is:
+\\\\
+XXXXX\\  
+X......XXXXX\\ 
+X..J..J..J...X\\  
+XXX..X..X...X\\   
+\hspace*{6 mm}X..X.....X\\  
+\hspace*{3 mm}XX..XXX..XX\\        
+\hspace*{3 mm}X..GGG..G..X\\ 
+\hspace*{3 mm}X....MG..J..X\\  
+\hspace*{3 mm}X..XXX..XXX\\     
+\hspace*{3 mm}X............X\\
+\hspace*{3 mm}XXXXXXX  
+\\\\ 
+where 'X' represents 'Wall' squares, '.' represent 'Emtpy' squares, 'J' represents 'Jewel' squares, 'G' represents 'goal' squares and finally 'M' represents the 'Man' square. 
+
+This map representation will be converted directly into a multidimensional array, in order to use the map in graph traversal by the chosen search algorithm. The multidimensional array representation is preferable, because a particular squares x and y coordinate translates directly to the corresponding row and column of the multidimensional array, which in turn enables the algorithm to quickly look up possible routes.

@@ -1,11 +1,12 @@
 % article document class appropriate for small (<100 pages) documents
-\documentclass[draft, english, a4paper]{article}
+\documentclass[draft, english, a4paper]{report}
 
 % Packages provide additional functionality
 %\usepackage{url}
-\usepackage{fixme}
+%\usepackage{fixme}
 %\usepackage{lmodern}
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
 \usepackage[left=3cm,top=4cm,right=3cm]{geometry}
 \usepackage[dvips,
             colorlinks=false,
@@ -29,11 +30,6 @@
 
 \maketitle % reads info from \title and \author above
 
-
-% where BibTeX should read the bibliography records from and what
-% style of bibliography it should generate
-%\bibliographystyle{plain}
-%\bibliography{}
 \chapter{Introduction}
 \newpage
 \chapter{Architecture}
@@ -48,15 +44,16 @@
 		\subsection{Physical aspects} %Morten
 	\section{Conclusion} %Morten
 \chapter{Planner description}
-	\section{Problem discussion, in the Sokoban domain} %Mikael
+	\input{sokoban_problem_discussion.tex}
 	\section{Discussion of path finding algorithms} %Mikael
 		\subsection{Selection of algorithm}
-	\section{Map representation} %Mikael
+	\input{map_representation.tex} %Mikael
 	\section{Algorithm design}
 	\section{Performance evaluation}
 	\section{conclusion}
 \chapter{Conclusion}
 \chapter{Discussion}
-\appendix
+\bibliographystyle{plain}
+\bibliography{bibtex_refs.bib}
 \end{document}
 
