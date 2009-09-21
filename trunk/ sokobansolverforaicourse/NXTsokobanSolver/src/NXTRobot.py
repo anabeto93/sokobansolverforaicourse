@@ -293,6 +293,7 @@ class AStarSearch():
             self.open_list.remove(node_current)
             surrounding_nodes = self.__get_surrounding_nodes(node_current)
             self.__score_nodes(node_current, surrounding_nodes)
+            
             for node in surrounding_nodes:
                 if node in self.open_list:
                     i = self.open_list.index(node)
@@ -302,7 +303,6 @@ class AStarSearch():
                     self.open_list.append(node)
                     #Check to see if it was the goal node
                     if node == self.goal:
-                        self.goal.parent = node.parent
                         self.closed_list.append(node)
                         goal_reached = True
                         
