@@ -25,14 +25,14 @@ As stated previously the purpose of the game is for the player to push 'Jewel' s
 \subsubsection{Challenges faced when solving Sokoban algorithmically}
 Given the fact that the player can on average move up, down, left and right, we see that the problem presents a so called branching factor of 4. If an algorithm is able to solve the puzzle in 100 moves, the complexity becomes 4$^{100}$ . 
 This enormous complexity, illustrates the need for some sort of heuristics, if the problem is to be solved in an acceptable time frame.
-Deadlocks are one of the main challenges faced when trying to solve the Sokoban puzzle. A daedlock is best described as a situation where a jewel is pushed into a position that eliminates the possibility of solving the puzzle, for instance pushing a jewel into a corner. Most current known algorithms that attempt to solve Sokoban due a large amount of processing to try and avoid deadlocks, by using for instance table lookups. One way of solving sokoban however, \cite{franktakes} that can almost avoid any need for deadlock detection, is the so called 'ReversedSolving-algorithm'
+Deadlocks are one of the main challenges faced when trying to solve the Sokoban puzzle. A deadlock is best described as a situation where a jewel is pushed into a position that eliminates the possibility of solving the puzzle, for instance pushing a jewel into a corner. Most current known algorithms that attempt to solve Sokoban due a large amount of processing to try and avoid deadlocks, by using for instance table lookups. One way of solving sokoban however, that can almost avoid any need for deadlock detection, is the so called 'ReversedSolving-algorithm'\cite{franktakes}
 
 \subsubsection{The Reversed-Solving algorithm}
-The reversed solving algorithm is based on the idea that all jewel are placed on the goal, and then pulled by the 'Man'/player into the original positions. When the solution has been found, the same path can then be used to push the jewels on to the goals.
+The reversed solving algorithm is based on the idea that all jewels are placed on the goal, and then pulled by the 'Man'/player into the original positions. When the solution has been found, the same path can then be used to push the jewels on to the goals.
 
 The fact that the 'Man' now pulls jewels instead of pushing them, makes it almost impossible to place jewels in deadlock positions (you can for instance not pull a jewel into a corner, or pull next to another jewel in a way that would make it impossible to pull it further).
 
-The algorithm contains the following steps \cite{franktakes}:
+The algorithm contains the following steps as described in \cite{franktakes}:
 
 \begin{enumerate}
 \item Load puzzle, and make a copy to keep track of original position of jewels
@@ -47,7 +47,7 @@ The algorithm contains the following steps \cite{franktakes}:
 The X condition in the above algorithm describes that condition required for the algorithm to switch from one jewel to the next. The following 3 conditions can be used, which all affect the efficiency of the algorithm depending on the puzzle being solved:
 
 \begin{itemize}
-\item X1: Afer N steps. N is an integer.
+\item X1: After N steps. N is an integer.
 \item X2: When a jewel is at its final position
 \item X3: When a jewel is N steps away from a final position
 \end{itemize}
