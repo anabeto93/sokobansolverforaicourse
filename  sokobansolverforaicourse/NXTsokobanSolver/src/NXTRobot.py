@@ -218,6 +218,7 @@ class AStarSearch():
         self.map = map
         self.open_list = []
         self.closed_list = []
+        self.nodes_to_goal = []
 
     def set_goal(self, node):
         self.goal = node
@@ -274,12 +275,12 @@ class AStarSearch():
             return 0
         else:
             return -1
-        
-    def __is_node_in_list(self, node_to_check, node_list):
-        for i, node in enumerate(node_list):
-            if node == node_to_check:
-                return i
-        return False
+    
+    def __construct_path_to_goal(self):
+        node = self.goal
+        while node != self.node_start:
+            self.nodes_to_goal.insert(0, node)
+            node = node.parent
     
     def do_search(self):
         goal_reached = False
@@ -293,16 +294,15 @@ class AStarSearch():
             surrounding_nodes = self.__get_surrounding_nodes(node_current)
             self.__score_nodes(node_current, surrounding_nodes)
             for node in surrounding_nodes:
-                i = self.__is_node_in_list(node, self.open_list)
-                if i != False:
+                if node in self.open_list:
+                    i = self.open_list.index(node)
                     if node.cost < self.open_list[i].cost:
-                        self.open_list[i].cost = node.cost
-                        self.open_list[i].heuristic = node.heuristic
-                        self.open_list[i].parent = node.parent
-                if not self.__is_node_in_list(node, self.closed_list):
+                        self.open_list[i] = node
+                if node not in self.closed_list:
                     self.open_list.append(node)
                     #Check to see if it was the goal node
                     if node == self.goal:
+                        self.goal.parent = node.parent
                         self.closed_list.append(node)
                         goal_reached = True
                         
@@ -313,12 +313,14 @@ class AStarSearch():
             self.open_list.sort(cmp = self.__score_compare)
     
         if goal_reached:
-            for step in self.closed_list:
-                print step.point
-                self.map.man[0].x = step.point[0]
-                self.map.man[0].y = step.point[1]
-                time.sleep(0.6)
-                
+            self.__construct_path_to_goal()
+        
+        for node in self.nodes_to_goal:
+            self.map.man[0].x = node.point[0]
+            self.map.man[0].y = node.point[1]
+            time.sleep(0.6)            
+        
+        self.nodes_to_goal = []
         self.open_list = []
         self.closed_list = []
         time.sleep(1)
