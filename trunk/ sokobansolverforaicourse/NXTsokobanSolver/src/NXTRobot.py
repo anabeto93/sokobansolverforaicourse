@@ -299,9 +299,9 @@ class AStarSearch():
                     i = self.open_list.index(node)
                     if node.cost < self.open_list[i].cost:
                         self.open_list[i] = node
+                        
                 if node not in self.closed_list:
                     self.open_list.append(node)
-                    #Check to see if it was the goal node
                     if node == self.goal:
                         self.closed_list.append(node)
                         goal_reached = True
