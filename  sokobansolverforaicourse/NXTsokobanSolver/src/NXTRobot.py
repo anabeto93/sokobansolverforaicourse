@@ -288,6 +288,7 @@ class AStarSearch():
         self.open_list.append(self.node_start)
         
         while not (goal_reached or open_list_empty):
+            self.open_list.sort(cmp = self.__score_compare)
             node_current = self.open_list[0]
             self.closed_list.append(node_current)
             self.open_list.remove(node_current)
@@ -303,14 +304,13 @@ class AStarSearch():
                 if node not in self.closed_list:
                     self.open_list.append(node)
                     if node == self.goal:
+                        self.goal.parent = node.parent
                         self.closed_list.append(node)
                         goal_reached = True
                         
             if len(self.open_list) == 0:
                 print 'Could not reach goal'
                 open_list_empty = True
-                
-            self.open_list.sort(cmp = self.__score_compare)
     
         if goal_reached:
             self.__construct_path_to_goal()
