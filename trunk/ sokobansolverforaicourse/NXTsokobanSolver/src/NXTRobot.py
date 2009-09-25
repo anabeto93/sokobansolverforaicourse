@@ -15,11 +15,12 @@ def get_full_path(relative_path):
         return os.path.dirname(os.path.dirname(os.path.abspath( __file__ ))) + relative_path
 
 def benchmark(function):
-                
-    time_start = time.clock()
-    function()
-    time_finish = time.clock()
-    print 'Time taken:', (time_finish - time_start)
+    def wrap(*args):            
+        time_start = time.time()
+        function(*args)
+        time_finish = time.time()
+        print('Time taken: ' + str((time_finish - time_start) * 1000) + ' ms')
+    return wrap
 
 class Movement():
     def __init__(self, physicalMover, virtualMover):       
@@ -66,11 +67,11 @@ class Mover():
     
 class MovementPhysical(Mover):
     def move_up(self):
-        print 'moving'
+        print('moving')
     
 class MovementVirtual(Mover):   
-    def __init__(self, map):
-        self.map = map
+    def __init__(self, soko_map):
+        self.map = soko_map
     
     def move_up(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x,self.map.man[0].y-1)
@@ -78,7 +79,7 @@ class MovementVirtual(Mover):
             jewel.y = jewel.y-1
         self.map.man[0].y = self.map.man[0].y-1
         self.map.man[0].img = self.map.man[0].img_up
-        print 'moving up'
+        print('moving up')
     
     def move_down(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x,self.map.man[0].y+1)
@@ -86,7 +87,7 @@ class MovementVirtual(Mover):
             jewel.y = jewel.y+1
         self.map.man[0].y = self.map.man[0].y+1
         self.map.man[0].img = self.map.man[0].img_down
-        print 'moving down'
+        print('moving down')
     
     def move_left(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x-1,self.map.man[0].y)
@@ -94,7 +95,7 @@ class MovementVirtual(Mover):
             jewel.x = jewel.x-1
         self.map.man[0].x = self.map.man[0].x-1
         self.map.man[0].img = self.map.man[0].img_left
-        print 'moving left'
+        print('moving left')
     
     def move_right(self):
         jewel = self.map.check_for_jewel(self.map.man[0].x+1,self.map.man[0].y)
@@ -102,7 +103,7 @@ class MovementVirtual(Mover):
             jewel.x = jewel.x+1
         self.map.man[0].x = self.map.man[0].x+1
         self.map.man[0].img = self.map.man[0].img_right
-        print 'moving right'
+        print('moving right')
         
 class Sprite():
     def __init__(self, x,y,img, img_up=None, img_down=None, img_left=None, img_right=None):
@@ -118,12 +119,12 @@ class Sprite():
 class Map():
     def __init__(self, maptext):
         self.textfile = [t.replace('\n', '') for t in open(maptext)]
+        self.width = None
+        self.height = None
         self._getMapProperties()
         #print 'WIDTH:', self.width, 'HEIGHT:', self.height, 'GOALS:', self.goals
         #for t in self.textfile:
         #    print t
-        self.width = None
-        self.height = None
         self.man = []
         self.jewels = []
         self.goals = []
