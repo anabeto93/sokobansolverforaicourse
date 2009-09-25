@@ -4,15 +4,22 @@ Created on Sep 1, 2009
 @author: zagnut
 '''
 
-import pygame
 from pygame.locals import *
-import time
-import threading
-import os
 import math
+import os
+import pygame
+import threading
+import time
 
 def get_full_path(relative_path):
         return os.path.dirname(os.path.dirname(os.path.abspath( __file__ ))) + relative_path
+
+def benchmark(function):
+                
+    time_start = time.clock()
+    function()
+    time_finish = time.clock()
+    print 'Time taken:', (time_finish - time_start)
 
 class Movement():
     def __init__(self, physicalMover, virtualMover):       
@@ -115,6 +122,8 @@ class Map():
         #print 'WIDTH:', self.width, 'HEIGHT:', self.height, 'GOALS:', self.goals
         #for t in self.textfile:
         #    print t
+        self.width = None
+        self.height = None
         self.man = []
         self.jewels = []
         self.goals = []
@@ -144,10 +153,10 @@ class Map():
         except:
             return ' '
                 
-    def get_object_position(self, type):
+    def get_object_position(self, square_type):
         for x in xrange(self.width):
             for y in xrange(self.height):
-                if self.get_map_point(x, y) == type:
+                if self.get_map_point(x, y) == square_type:
                     return (x, y)
         return None
                 
@@ -176,11 +185,12 @@ class Map():
         return None
 
 class Painter(threading.Thread):
-    def __init__(self, map):
+    def __init__(self, soko_map):
         threading.Thread.__init__(self)
         self.daemon = True
         pygame.init() 
-        self.map = map
+        self.map = soko_map
+        self.background = None
         self.screen = pygame.display.set_mode((self.map.man[0].img.get_width()*self.map.width, self.map.man[0].img.get_height()*self.map.height))
         pygame.display.set_caption('SokoHero')
         
@@ -211,36 +221,39 @@ class Node():
     
     def __eq__(self, other):
         return (self.point[0] == other.point[0] and self.point[1] == other.point[1])
-        
-        
+              
 class AStarSearch():
-    def __init__(self, map):
-        self.map = map
+    def __init__(self, soko_map):
+        self.map = soko_map
         self.open_list = []
         self.closed_list = []
         self.nodes_to_goal = []
+        self.goal_reached = False
 
+        self.node_goal = None
+        self.node_start = None
+        
     def set_goal(self, node):
-        self.goal = node
+        self.node_goal = node
     
     def set_starting_position(self, node):
         self.node_start = node
     
-    def __get_node_cost(self, node_current, node_to_cost):
+    def _get_node_cost(self, node_current, node_to_cost):
         x_curr = node_current.point[0]
         y_curr = node_current.point[1]
         x_cost = node_to_cost.point[0]
         y_cost = node_to_cost.point[1]        
-        return math.sqrt(abs(x_cost - x_curr)**2 + abs(y_cost - y_curr)**2)
+        return abs(x_cost - x_curr) + abs(y_cost - y_curr)
     
-    def __get_node_heuristic(self, node_goal, node_to_heuristic):
+    def _get_node_heuristic(self, node_goal, node_to_heuristic):
         x_goal = node_goal.point[0]
         y_goal = node_goal.point[1]
         x_heu = node_to_heuristic.point[0]
         y_heu = node_to_heuristic.point[1]        
-        return math.sqrt(abs(x_heu - x_goal)**2 + abs(y_heu - y_goal)**2)        
+        return abs(x_heu - x_goal) + abs(y_heu - y_goal)        
         
-    def __get_surrounding_nodes(self, node):
+    def _get_surrounding_nodes(self, node):
         x = node.point[0]
         y = node.point[1]
         
@@ -257,18 +270,18 @@ class AStarSearch():
 
         nodes = []
         for point in points:
-            type = self.map.get_map_point(point[0], point[1])
-            if type == '.' or type == 'G':
+            square_type = self.map.get_map_point(point[0], point[1])
+            if square_type == '.' or type == 'G':
                 nodes.append(Node(point, node))   
         return nodes
     
-    def __score_nodes(self, node_current, surrounding_nodes):
+    def _score_nodes(self, node_current, surrounding_nodes):
         for node in surrounding_nodes:
-            node.cost = self.__get_node_cost(node_current, node)
-            node.heuristic = self.__get_node_heuristic(self.goal, node)
+            node.cost = self._get_node_cost(node_current, node)
+            node.heuristic = self._get_node_heuristic(self.node_goal, node)
             node.score = node.cost + node.heuristic
     
-    def __score_compare(self, node_a, node_b):
+    def _score_compare(self, node_a, node_b):
         if node_a.score > node_b.score:
             return 1
         elif node_a.score == node_b.score:
@@ -276,24 +289,29 @@ class AStarSearch():
         else:
             return -1
     
-    def __construct_path_to_goal(self):
-        node = self.goal
+    def _construct_path_to_goal(self):
+        node = self.node_goal
         while node != self.node_start:
             self.nodes_to_goal.insert(0, node)
             node = node.parent
-    
+            
+    @benchmark  
     def do_search(self):
-        goal_reached = False
+        self.nodes_to_goal = []
+        self.open_list = []
+        self.closed_list = []
+        self.goal_reached = False
+        
         open_list_empty = False
         self.open_list.append(self.node_start)
         
-        while not (goal_reached or open_list_empty):
-            self.open_list.sort(cmp = self.__score_compare)
+        while not (self.goal_reached or open_list_empty):
+            self.open_list.sort(cmp = self._score_compare)
             node_current = self.open_list[0]
             self.closed_list.append(node_current)
             self.open_list.remove(node_current)
-            surrounding_nodes = self.__get_surrounding_nodes(node_current)
-            self.__score_nodes(node_current, surrounding_nodes)
+            surrounding_nodes = self._get_surrounding_nodes(node_current)
+            self._score_nodes(node_current, surrounding_nodes)
             
             for node in surrounding_nodes:
                 if node in self.open_list:
@@ -303,28 +321,19 @@ class AStarSearch():
                         
                 if node not in self.closed_list:
                     self.open_list.append(node)
-                    if node == self.goal:
-                        self.goal.parent = node.parent
+                    if node == self.node_goal:
+                        self.node_goal.parent = node.parent
                         self.closed_list.append(node)
-                        goal_reached = True
+                        self.goal_reached = True
                         
             if len(self.open_list) == 0:
-                print 'Could not reach goal'
+                #print 'Could not reach goal'
                 open_list_empty = True
+                break
     
-        if goal_reached:
-            self.__construct_path_to_goal()
-        
-        for node in self.nodes_to_goal:
-            self.map.man[0].x = node.point[0]
-            self.map.man[0].y = node.point[1]
-            time.sleep(0.6)            
-        
-        self.nodes_to_goal = []
-        self.open_list = []
-        self.closed_list = []
-        time.sleep(1)
-            
+        if self.goal_reached:
+            self._construct_path_to_goal()
+
 def main_temp():
     x = Movement(MovementPhysical(), MovementVirtual())
     x.move_up()
