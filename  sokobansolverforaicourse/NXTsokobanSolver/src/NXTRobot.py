@@ -19,7 +19,7 @@ def benchmark(function):
         time_start = time.time()
         function(*args)
         time_finish = time.time()
-        print('Time taken: ' + str((time_finish - time_start) * 1000) + ' ms')
+        print('Time taken for ' + function.__name__ + ': ' + str((time_finish - time_start) * 1000) + ' ms')
     return wrap
 
 class Movement():
