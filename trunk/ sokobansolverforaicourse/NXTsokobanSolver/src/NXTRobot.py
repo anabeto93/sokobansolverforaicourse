@@ -420,17 +420,38 @@ class SokobanSolver():
             for jewel_index in xrange(len(self.soko_state.jewels)): 
                 if not jewel_index in jewels_goaled:
                     jewel_node = Node(self.soko_state.jewels[jewel_index])
-                    path = self.find_path(jewel_node, goal_node, 'G')
-                    if path != None:
+                    jewel_path = self.find_path(jewel_node, goal_node, 'G')
+                    if jewel_path != None:
                         print('One found')
-                        #time.sleep(20)
-                        self.update_jewel_layout(jewel_index, self.soko_state.goals[goal_index])
-                        jewels_goaled.append(jewel_index)
-                        for step in path:
-                            self.soko_map.jewels[jewel_index].x = step.point[0]
-                            self.soko_map.jewels[jewel_index].y = step.point[1]
-                            time.sleep(0.1)                   
-                        break
+                        #Test to see if the man can push the jewel with the currently discovered jewel_path
+                        man_start_node = Node(self.soko_state.man)
+                        jewel_path_first_step = jewel_path[0]
+                        if jewel_path_first_step.point[0] - jewel_node.point[0] == -1:
+                            #The jewel is moving left, so the man should position to the right
+                            man_end_node = Node((jewel_path_first_step.point[0] + 1, jewel_path_first_step.point[1]))
+                        elif jewel_path_first_step.point[0] - jewel_node.point[0] == 1:
+                            #The jewel is moving right, so the man should position to the left
+                            man_end_node = Node((jewel_path_first_step.point[0] - 1, jewel_path_first_step.point[1]))
+                        elif jewel_path_first_step.point[1] - jewel_node.point[1] == -1:
+                            #The jewel is moving up, so the man should position at the bottom
+                            man_end_node = Node((jewel_path_first_step.point[0], jewel_path_first_step.point[1] + 1))
+                        elif jewel_path_first_step.point[1] - jewel_node.point[1] == 1:
+                            #The jewel is moving down, so the man should position at the top
+                            man_end_node = Node((jewel_path_first_step.point[0], jewel_path_first_step.point[1] - 1))
+                        man_path = self.find_path(man_start_node, man_end_node, 'M')
+                        if man_path != None:
+                            for step in man_path:
+                                self.soko_map.man[0].x = step.point[0]
+                                self.soko_map.man[0].y = step.point[1]
+                                time.sleep(0.1)
+                            self.soko_state.man = (self.soko_map.man[0].x, self.soko_map.man[0].y)    
+                            self.update_jewel_layout(jewel_index, self.soko_state.goals[goal_index])
+                            jewels_goaled.append(jewel_index)
+                            for step in jewel_path:
+                                self.soko_map.jewels[jewel_index].x = step.point[0]
+                                self.soko_map.jewels[jewel_index].y = step.point[1]
+                                time.sleep(0.1)                   
+                            break
                     else:
                         print('What?')
             #jewels_goaled = []
