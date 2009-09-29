@@ -10,6 +10,7 @@ import os
 import pygame
 import threading
 import time
+import itertools
 
 def get_full_path(relative_path):
         return os.path.dirname(os.path.dirname(os.path.abspath( __file__ ))) + relative_path
@@ -294,6 +295,17 @@ class AStarSearch():
                 square_type = self.map.map_layout[point[0]][point[1]]
                 if square_type == '.' or square_type == 'G':
                     nodes.append(Node(point, node))
+        elif self.search_for_type.lower() == 'reverse':            
+            points = []
+            points.append(((x - 1, y), (x - 2, y)))
+            points.append(((x + 1, y), (x + 2, y)))
+            points.append(((x, y + 1), (x, y + 2)))
+            points.append(((x, y - 1), (x, y - 2)))
+            for point in points:
+                first_square_type = self.map.map_layout[point[0][0]][point[0][1]]
+                second_square_type = self.map.map_layout[point[1][0]][point[1][1]]
+                if (first_square_type == '.' or first_square_type == 'G' or (first_square_type == 'J' and point[0][0] == self.node_goal.point[0] and point[0][1] == self.node_goal.point[1])) and (second_square_type == '.' or second_square_type == 'G' or (second_square_type == 'J' and point[1][0] == self.node_goal.point[0] and point[1][1] == self.node_goal.point[1])):
+                    nodes.append(Node(point[0], node))
         return nodes
     
     def _score_nodes(self, node_current, surrounding_nodes):
@@ -411,7 +423,42 @@ class SokobanSolver():
             if not jewel in self.soko_state.goals:
                 done = False
         return done
-    
+                        
+    def solve_reverse(self):
+        #Move all jewels onto goals, but save original coordinates
+        jewels_final_coordinates = []
+        for index, jewel in enumerate(self.soko_state.jewels):
+            jewels_final_coordinates.append(jewel)
+            self.update_jewel_layout(index, self.soko_state.goals[index])
+        
+        generator_goal_index = itertools.permutations(list(range(len(self.soko_state.goals))), len(self.soko_state.goals))
+        generator_jewel_index = itertools.permutations(list(range(len(self.soko_state.jewels))), len(self.soko_state.jewels))
+        
+        solved = False
+        #while not solved:
+        for goal_attempt in generator_goal_index:
+            print(goal_attempt)
+            for jewel_attempt in generator_jewel_index:
+                #move jewels to goals (Reset map!)
+                for index in range(len(self.soko_state.jewels)):
+                    self.update_jewel_layout(index, self.soko_state.goals[index])
+                for index in range(len(goal_attempt)):
+                    solved = True
+                    node_goal = Node(jewels_final_coordinates[index])
+                    node_jewel = Node(self.soko_state.jewels[jewel_attempt[index]])
+                    path = self.find_path(node_jewel, node_goal, 'reverse')
+                    if path == None:
+                        solved = False
+                        break
+                    else:
+                        self.update_jewel_layout(index, jewels_final_coordinates[index])
+                if solved == True:
+                    break
+        if solved == True:
+            print('Solved')
+        else:
+            print('Unsolvable!') 
+        
     def solve(self):
         goal_index = 0
         jewels_goaled = []
@@ -461,6 +508,13 @@ class SokobanSolver():
                 jewels_goaled = []
         print('Puzzle solved')
         
+def main_5():
+    pygame.display.set_mode()
+    soko_map = Map(get_full_path('/rsc/mymap.txt'))
+    solver = SokobanSolver(soko_map)
+    print('Going to work')
+    solver.solve_reverse()
+    
 def main_4():
     pygame.display.set_mode()
     soko_map = Map(get_full_path('/rsc/mymap.txt'))
@@ -497,4 +551,4 @@ def main_temp2():
     #raw_input()
     
 if __name__ == '__main__':
-    main_4()
+    main_5()
