@@ -5,6 +5,7 @@ Created on Sep 1, 2009
 '''
 
 from pygame.locals import *
+import random
 import math
 import os
 import pygame
@@ -306,6 +307,16 @@ class AStarSearch():
                 second_square_type = self.map.map_layout[point[1][0]][point[1][1]]
                 if (first_square_type == '.' or first_square_type == 'G' or (first_square_type == 'J' and point[0][0] == self.node_goal.point[0] and point[0][1] == self.node_goal.point[1])) and (second_square_type == '.' or second_square_type == 'G' or (second_square_type == 'J' and point[1][0] == self.node_goal.point[0] and point[1][1] == self.node_goal.point[1])):
                     nodes.append(Node(point[0], node))
+        elif self.search_for_type.lower() == 'obstacle':
+            points = []
+            points.append((x - 1, y))
+            points.append((x + 1, y))
+            points.append((x, y + 1))
+            points.append((x, y - 1))
+            for point in points:
+                square_type = self.map.map_layout[point[0]][point[1]]
+                if square_type == '.' or square_type == 'G' or square_type == 'J':
+                    nodes.append(Node(point, node))
         return nodes
     
     def _score_nodes(self, node_current, surrounding_nodes):
@@ -402,6 +413,7 @@ class SokobanSolver():
         self.soko_state = SokoState(soko_map)
         self.searcher = AStarSearch(self.soko_state)
         self.soko_map = soko_map
+        self.jewels_final_coordinates = []
          
     def find_path(self, node_start, node_end, search_type):
         self.searcher.set_search_for_type(search_type)
@@ -412,53 +424,115 @@ class SokobanSolver():
         else:
             return None
         
-    def update_jewel_layout(self, jewel_index, new_point):
+    def detect_obstacle(self, node_start, node_end):
+        path = self.find_path(node_start, node_end, 'obstacle')
+        if path != None:
+            for node in path:
+                if node.point in self.soko_state.jewels:
+                    return node
+        return None
+            
+    def update_jewel_layout(self, jewel_index, new_point, path = None):
         self.soko_state.map_layout[self.soko_state.jewels[jewel_index][0]][self.soko_state.jewels[jewel_index][1]] = '.'
         self.soko_state.map_layout[new_point[0]][new_point[1]] = 'J'
         self.soko_state.jewels[jewel_index] = new_point
-    
+        if path != None:
+            for step in path:
+                self.soko_map.jewels[jewel_index].x = step.point[0]
+                self.soko_map.jewels[jewel_index].y = step.point[1]
+                time.sleep(0.3)
+        else:
+            self.soko_map.jewels[jewel_index].x = new_point[0]
+            self.soko_map.jewels[jewel_index].y = new_point[1]
+            
     def has_puzzle_been_solved(self):
         done = True
         for jewel in self.soko_state.jewels:
             if not jewel in self.soko_state.goals:
                 done = False
         return done
-                        
+    
+    def reversed_puzzle_solved(self):
+        for point in self.jewels_final_coordinates:
+            if point not in self.soko_state.jewels:
+                return False 
+        return True
+          
     def solve_reverse(self):
         #Move all jewels onto goals, but save original coordinates
-        jewels_final_coordinates = []
         for index, jewel in enumerate(self.soko_state.jewels):
-            jewels_final_coordinates.append(jewel)
+            self.jewels_final_coordinates.append(jewel)
             self.update_jewel_layout(index, self.soko_state.goals[index])
         
         generator_goal_index = itertools.permutations(list(range(len(self.soko_state.goals))), len(self.soko_state.goals))
         generator_jewel_index = itertools.permutations(list(range(len(self.soko_state.jewels))), len(self.soko_state.jewels))
         
-        solved = False
         #while not solved:
         for goal_attempt in generator_goal_index:
             print(goal_attempt)
             for jewel_attempt in generator_jewel_index:
-                #move jewels to goals (Reset map!)
+                #===============================================================
+                # move jewels to goals (Reset map!)
+                #===============================================================
                 for index in range(len(self.soko_state.jewels)):
                     self.update_jewel_layout(index, self.soko_state.goals[index])
+                
                 for index in range(len(goal_attempt)):
-                    solved = True
-                    node_goal = Node(jewels_final_coordinates[index])
+                    node_goal = Node(self.jewels_final_coordinates[index])
                     node_jewel = Node(self.soko_state.jewels[jewel_attempt[index]])
                     path = self.find_path(node_jewel, node_goal, 'reverse')
                     if path == None:
-                        solved = False
-                        break
+                        #=======================================================
+                        # Try moving an obstacles out of the way!
+                        #=======================================================
+                        node_obstacle = self.detect_obstacle(node_jewel, node_goal)
+                        if node_obstacle != None:
+                            print('Obstacle in the way:' + str((node_obstacle.point[0], node_obstacle.point[1])))
+                            for i in range(100):
+                                #===============================================
+                                # find usable place where the obstacle can be 
+                                # moved to
+                                #===============================================
+                                while True:
+                                    x = (node_obstacle.point[0] + int(random.random() * 20)) % (self.soko_map.width - 1)
+                                    y = (node_obstacle.point[1] + int(random.random() * 20)) % (self.soko_map.height - 1)
+                                    node_obstacle_move_to = Node((x, y))
+                                    square_type = self.soko_state.map_layout[node_obstacle_move_to.point[0]][node_obstacle_move_to.point[1]]
+                                    if square_type == '.' or square_type == 'G':
+                                        break
+                                    #===========================================
+                                    # Try to find a path to move the jewel obstacle
+                                    #===========================================
+                                    avoid_path = self.find_path(node_obstacle, node_obstacle_move_to, 'reverse')
+                                    if avoid_path != None:
+                                        #=======================================
+                                        # Find index of jewel obstacle, so that
+                                        # it can be moved out of the way
+                                        #=======================================
+                                        obstacle_index = self.jewels_final_coordinates.index(node_obstacle.point)
+                                        self.update_jewel_layout(obstacle_index, node_obstacle_move_to.point, avoid_path)
+                                        #=======================================
+                                        # Now try to place original jewel on goal
+                                        #=======================================
+                                        path = self.find_path(node_jewel, node_goal, 'reverse')
+                                        if path != None:
+                                            #===================================
+                                            # Now that the obstacle back to original place
+                                            #===================================
+                                            avoid_path_back = self.find_path(node_obstacle_move_to, node_obstacle, 'reverse')
+                                            if avoid_path_back != None:
+                                                self.update_jewel_layout(index, self.jewels_final_coordinates[index], path)
+                                                self.update_jewel_layout(obstacle_index, node_obstacle.point, avoid_path_back)
+                                                break
+                        else:
+                            break
                     else:
-                        self.update_jewel_layout(index, jewels_final_coordinates[index])
-                if solved == True:
-                    break
-        if solved == True:
-            print('Solved')
-        else:
-            print('Unsolvable!') 
-        
+                        self.update_jewel_layout(index, self.jewels_final_coordinates[index], path)
+                        
+                if self.reversed_puzzle_solved():
+                    return True
+        return False
+    
     def solve(self):
         goal_index = 0
         jewels_goaled = []
@@ -512,6 +586,8 @@ def main_5():
     pygame.display.set_mode()
     soko_map = Map(get_full_path('/rsc/mymap.txt'))
     solver = SokobanSolver(soko_map)
+    tusch = Painter(soko_map)
+    tusch.start()    
     print('Going to work')
     solver.solve_reverse()
     
