@@ -490,18 +490,21 @@ class SokobanSolver():
                         node_obstacle = self.detect_obstacle(node_jewel, node_goal)
                         if node_obstacle != None:
                             print('Obstacle in the way:' + str((node_obstacle.point[0], node_obstacle.point[1])))
-                            for i in range(100):
+                            for i in range(1000):
                                 #===============================================
                                 # find usable place where the obstacle can be 
                                 # moved to
                                 #===============================================
+                                inc_factor = 5
                                 while True:
-                                    x = (node_obstacle.point[0] + int(random.random() * 20)) % (self.soko_map.width - 1)
-                                    y = (node_obstacle.point[1] + int(random.random() * 20)) % (self.soko_map.height - 1)
+                                    x = (node_obstacle.point[0] + int(random.random() * inc_factor)) % (self.soko_map.width - 1)
+                                    y = (node_obstacle.point[1] + int(random.random() * inc_factor)) % (self.soko_map.height - 1)
                                     node_obstacle_move_to = Node((x, y))
                                     square_type = self.soko_state.map_layout[node_obstacle_move_to.point[0]][node_obstacle_move_to.point[1]]
                                     if square_type == '.' or square_type == 'G':
                                         break
+                                    else:
+                                        inc_factor += 0.2
                                     #===========================================
                                     # Try to find a path to move the jewel obstacle
                                     #===========================================
