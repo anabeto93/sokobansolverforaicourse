@@ -459,7 +459,9 @@ class SokobanSolver():
         return True
           
     def solve_reverse(self):
-        #Move all jewels onto goals, but save original coordinates
+        #=======================================================================
+        # Move all jewels onto goals, but save original coordinates
+        #=======================================================================
         for index, jewel in enumerate(self.soko_state.jewels):
             self.jewels_final_coordinates.append(jewel)
             self.update_jewel_layout(index, self.soko_state.goals[index])
