@@ -218,7 +218,7 @@ class Painter(threading.Thread):
             time.sleep(0.1)
 
 class Node():
-    def __init__(self, point, parent = None, score = None, cost = None, heuristics = None): 
+    def __init__(self, point, parent = None, score = None, heuristics = None): 
         self.parent = parent
         self.point = point
         self.score = score
@@ -235,7 +235,7 @@ class SokoState():
         self.bricks = []
         self.man = None
         self.map_layout = [['']*soko_map.height for i in xrange(soko_map.width)]
-        self.cost = 0
+        self.score = 0
         self.parent = None
         
         #Take a copy of the map_layout
@@ -268,16 +268,19 @@ class SokoState():
         # We use manhatten distance
         #=======================================================================
         heurist = 0
-        minimum_dist = 0
+        minimum_dist = 10000000
         for jewel in self.jewels:
             if jewel in self.goals:
                 continue
-            minimum_dist = 0
+            minimum_dist = 10000000
             for goal in self.goals:
-                dist = abs(goal[0] - jewel[0]) + abs(goal[1] - jewel[0])
+                dist = abs(goal[0] - jewel[0]) + abs(goal[1] - jewel[1])
                 if dist < minimum_dist:
                     minimum_dist = dist 
+            if minimum_dist < 10000000:
                 heurist += minimum_dist
+        return heurist
+    
     def is_goal_state(self):
         for jewel in self.jewels:
             if jewel not in self.goals:
@@ -285,12 +288,10 @@ class SokoState():
         return True
     
     def __eq__(self, other):
-        equal = True
         for jewel in self.jewels:
             if not jewel in other.jewels:
-                equal = False
-                break
-        return equal
+                return False
+        return True
     
 class AStarSearch():
     def __init__(self, soko_state):
@@ -299,20 +300,6 @@ class AStarSearch():
         self.closed_list = []
         self.nodes_to_goal = []
         self.goal_reached = False
-        
-    def set_goal_node(self, node):
-        self.open_list = []
-        self.closed_list = []
-        self.nodes_to_goal = []
-        self.goal_reached = False
-        self.node_goal = node
-    
-    def set_starting_node(self, node):
-        self.open_list = []
-        self.closed_list = []
-        self.nodes_to_goal = []
-        self.goal_reached = False
-        self.node_start = node
     
     def _get_node_cost(self, node_current, node_to_cost):
         x_curr = node_current.point[0]
@@ -328,10 +315,15 @@ class AStarSearch():
         y_heu = node_to_heuristic.point[1]        
         return abs(x_heu - x_goal) + abs(y_heu - y_goal)        
         
-    def _get_surrounding_nodes(self, node):
+    def _get_surrounding_nodes(self, node, heuristic = False):
         x = node.point[0]
         y = node.point[1]
-    
+        
+        if heuristic:
+            optional = 'J'
+        else:
+            optional = ''
+            
         nodes = []
         points = []
         points.append((x - 1, y))
@@ -340,7 +332,7 @@ class AStarSearch():
         points.append((x, y - 1))
         for point in points:
             square_type = self.map.map_layout[point[0]][point[1]]
-            if square_type == '.' or square_type == 'G':
+            if square_type == '.' or square_type == 'G' or square_type == optional:
                 nodes.append(Node(point, node))
         return nodes
     
@@ -363,12 +355,10 @@ class AStarSearch():
         while node != node_start:
             self.nodes_to_goal.insert(0, node)
             node = node.parent
-    
-    def set_search_for_type(self, search_for_type):
-        self.search_for_type = search_for_type
         
     #@benchmark  
-    def do_search(self, node_start, node_end):
+    def do_search(self, soko_state, node_start, node_end, heuristic = False):
+        self.map = soko_state
         self.nodes_to_goal = []
         self.open_list = []
         self.closed_list = []
@@ -379,16 +369,15 @@ class AStarSearch():
         
         while not (self.goal_reached or open_list_empty):
             self.open_list.sort(cmp = self._score_compare)
-            node_current = self.open_list[0]
+            node_current = self.open_list.pop(0)
             self.closed_list.append(node_current)
-            self.open_list.remove(node_current)
-            surrounding_nodes = self._get_surrounding_nodes(node_current)
+            surrounding_nodes = self._get_surrounding_nodes(node_current, heuristic)
             self._score_nodes(node_current, surrounding_nodes, node_end)
             
             for node in surrounding_nodes:
                 if node in self.open_list:
                     i = self.open_list.index(node)
-                    if node.cost < self.open_list[i].cost:
+                    if node.score < self.open_list[i].score:
                         self.open_list[i] = node
                 else:        
                     if node not in self.closed_list:
@@ -405,8 +394,9 @@ class AStarSearch():
             
 class SokoSolver():
     def __init__(self, soko_map):
+        self.map_paint = soko_map
         self.initial_soko_state = SokoState(soko_map)
-        self.player_move_searcher = AStarSearch(self.initial_soko_state)
+        self.move_searcher = AStarSearch(self.initial_soko_state)
         self.open_list = []
         self.closed_list = []
         
@@ -427,80 +417,81 @@ class SokoSolver():
     def is_state_possible(self, state):
         for jewel in state.jewels:
             if jewel in state.goals:
-                return True
-            left_square = state.map_layout[jewel[0]][jewel[1] - 1]
-            right_square = state.map_layout[jewel[0]][jewel[1] + 1]
-            up_square = state.map_layout[jewel[0] - 1][jewel[1]]
-            down_square = state.map_layout[jewel[0] + 1][jewel[1]]
+                continue
+            left_square = state.map_layout[jewel[0] - 1][jewel[1]]
+            right_square = state.map_layout[jewel[0] + 1][jewel[1]]
+            up_square = state.map_layout[jewel[0]][jewel[1] - 1]
+            down_square = state.map_layout[jewel[0]][jewel[1] + 1]
             if (left_square == 'X' or right_square == 'X') and (up_square == 'X' or down_square == 'X'):
-                return False 
+                return False
+        return True
             
     def expand(self, soko_state):
         for jewel in soko_state.jewels:
-            
-            state = copy.deepcopy(soko_state)
-            if self.is_move_possible(state, jewel, 'U'):
-                if self.player_move_searcher.do_search(Node(state.man), Node((jewel[0], jewel[1] + 1))):
+            #jewel = j[:]
+            if self.is_move_possible(soko_state, jewel, 'U'):
+                state = copy.deepcopy(soko_state)
+                if self.move_searcher.do_search(state, Node(state.man), Node((jewel[0], jewel[1] + 1))):
                     state.update_jewel_position(jewel, (jewel[0], jewel[1] - 1))
-                    state.update_man_position((jewel[0], jewel[1] + 1))
+                    state.update_man_position((jewel[0], jewel[1]))
                     if self.is_state_possible(state):
-                        state.cost += state.get_heuristics()
-                        state.cost += len(self.player_move_searcher.nodes_to_goal)
+                        state.score = state.get_heuristic()
+                        state.score += len(self.move_searcher.nodes_to_goal)
                         state.parent = soko_state
                         if state in self.open_list:
                             index = self.open_list.index(state)
-                            if state.cost < self.open_list[index].cost:
+                            if state.score < self.open_list[index].score:
                                 self.open_list[index] = state
                         else:
                             if state not in self.closed_list:
                                 self.open_list.append(state)
-                                
-            state = copy.deepcopy(soko_state)       
+                                       
             if self.is_move_possible(soko_state, jewel, 'D'):
-                if self.player_move_searcher.do_search(Node(soko_state.man), Node((jewel[0], jewel[1] - 1))):
+                state = copy.deepcopy(soko_state)
+                if self.move_searcher.do_search(state, Node(state.man), Node((jewel[0], jewel[1] - 1))):
                     state.update_jewel_position(jewel, (jewel[0], jewel[1] + 1))
-                    state.update_man_position((jewel[0], jewel[1] - 1))
+                    state.update_man_position((jewel[0], jewel[1]))
                     if self.is_state_possible(state):
-                        state.cost += state.get_heuristics()
-                        state.cost += len(self.player_move_searcher.nodes_to_goal)
+                        state.score = state.get_heuristic()
+                        state.score += len(self.move_searcher.nodes_to_goal)
                         state.parent = soko_state
                         if state in self.open_list:
                             index = self.open_list.index(state)
-                            if state.cost < self.open_list[index].cost:
+                            if state.score < self.open_list[index].score:
                                 self.open_list[index] = state
                         else:
                             if state not in self.closed_list:
                                 self.open_list.append(state)
-                        
-            state = copy.deepcopy(soko_state)          
+                              
             if self.is_move_possible(soko_state, jewel, 'L'):
-                if self.player_move_searcher.do_search(Node(soko_state.man), Node((jewel[0] + 1, jewel[1]))):
-                    state.update_jewel_position(jewel, (jewel[0], jewel[1] - 1))
-                    state.update_man_position((jewel[0] + 1, jewel[1]))
+                state = copy.deepcopy(soko_state)
+                if self.move_searcher.do_search(state, Node(state.man), Node((jewel[0] + 1, jewel[1]))):
+                    state.update_jewel_position(jewel, (jewel[0] - 1, jewel[1]))
+                    state.update_man_position((jewel[0], jewel[1]))
                     if self.is_state_possible(state):
-                        state.cost += state.get_heuristics()
-                        state.cost += len(self.player_move_searcher.nodes_to_goal)
+                        state.score = state.get_heuristic()
+                        state.score += len(self.move_searcher.nodes_to_goal)
                         state.parent = soko_state
                         if state in self.open_list:
                             index = self.open_list.index(state)
-                            if state.cost < self.open_list[index].cost:
+                            if state.score < self.open_list[index].score:
                                 self.open_list[index] = state
                         else:
-                            if state not in self.closed_list:
+                            if state not in self.closed_list or len(self.open_list) == 0:
                                 self.open_list.append(state)
-                        
-            state = copy.deepcopy(soko_state)              
+                                      
             if self.is_move_possible(soko_state, jewel, 'R'):
-                if self.player_move_searcher.do_search(Node(soko_state.man), Node((jewel[0] - 1, jewel[1]))):
-                    state.update_jewel_position(jewel, (jewel[0], jewel[1] + 1))
-                    state.update_man_position((jewel[0] - 1, jewel[1]))
+                state = copy.deepcopy(soko_state)
+                if self.move_searcher.do_search(state, Node(state.man), Node((jewel[0] - 1, jewel[1]))):
+                    state.update_jewel_position(jewel, (jewel[0] + 1, jewel[1]))
+                    state.update_man_position((jewel[0], jewel[1]))
                     if self.is_state_possible(state):
-                        state.cost += state.get_heuristics()
-                        state.cost += len(self.player_move_searcher.nodes_to_goal)
+                        state.score = state.get_heuristic()
+                        state.score += len(self.move_searcher.nodes_to_goal)
                         state.parent = soko_state
                         if state in self.open_list:
                             index = self.open_list.index(state)
-                            if state.cost < self.open_list[index].cost:
+                            if state.score < self.open_list[index].score:
                                 self.open_list[index] = state
                         else:
                             if state not in self.closed_list:
@@ -518,18 +509,42 @@ class SokoSolver():
         self.open_list = []
         self.open_list.append(self.initial_soko_state)
         tries = 0
+        time_start = time.time()
+        solved = False
+        top_state = None
         while len(self.open_list) > 0:
             tries += 1
             if tries % 1000 == 0:
                 print('Nr. of tries: ' + str(tries))
+                print('Fringe size: ' + str(len(self.open_list)))
+                print('Nodes tested: ' + str(len(self.closed_list)))
             self.open_list.sort(cmp = self.score_compare)
-            top_state = self.open_list[0]
+            top_state = self.open_list.pop(0)
+            
+            for i, sprite in enumerate(self.map_paint.jewels):
+                sprite.x = top_state.jewels[i][0]
+                sprite.y = top_state.jewels[i][1]
+ 
+            self.map_paint.man[0].x = top_state.man[0]
+            self.map_paint.man[0].y = top_state.man[1]
+            
             self.closed_list.append(top_state)
             if not top_state.is_goal_state():
                 self.expand(top_state)
             else:
-                'Solved the puzzle!'
+                solved = True
                 break
+            if len(self.open_list) == 0:
+                print('Open list empty')
+        time_end = time.time()
+        if solved:
+            print('Solved the puzzle!')
+        else:
+            print('Unable to solve the puzzle')
+        print('Time taken: ' + str((time_end - time_start)))
+        print(top_state.jewels)
+        print(top_state.goals)
+        print(str(top_state.score))
         
 def main_5():
     pygame.display.set_mode()
@@ -538,10 +553,7 @@ def main_5():
     tusch = Painter(soko_map)
     tusch.start()    
     print('Going to work')
-    if solver.solve():
-        print('Solved')
-    else:
-        print('Could not solve puzzle')
+    solver.solve()
             
 
 if __name__ == '__main__':
