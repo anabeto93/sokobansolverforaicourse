@@ -270,8 +270,9 @@ class SokoState():
         heurist = 0
         minimum_dist = 10000000
         for jewel in self.jewels:
-            if jewel in self.goals:
-                continue
+            #if jewel in self.goals:
+            #    continue
+            #heurist += 100
             minimum_dist = 10000000
             for goal in self.goals:
                 dist = abs(goal[0] - jewel[0]) + abs(goal[1] - jewel[1])
@@ -434,6 +435,7 @@ class SokoSolver():
                 if self.move_searcher.do_search(state, Node(state.man), Node((jewel[0], jewel[1] + 1))):
                     state.update_jewel_position(jewel, (jewel[0], jewel[1] - 1))
                     state.update_man_position((jewel[0], jewel[1]))
+                    
                     if self.is_state_possible(state):
                         state.score = state.get_heuristic()
                         state.score += len(self.move_searcher.nodes_to_goal)
@@ -455,6 +457,7 @@ class SokoSolver():
                         state.score = state.get_heuristic()
                         state.score += len(self.move_searcher.nodes_to_goal)
                         state.parent = soko_state
+                        
                         if state in self.open_list:
                             index = self.open_list.index(state)
                             if state.score < self.open_list[index].score:
@@ -472,6 +475,7 @@ class SokoSolver():
                         state.score = state.get_heuristic()
                         state.score += len(self.move_searcher.nodes_to_goal)
                         state.parent = soko_state
+                        
                         if state in self.open_list:
                             index = self.open_list.index(state)
                             if state.score < self.open_list[index].score:
@@ -489,6 +493,7 @@ class SokoSolver():
                         state.score = state.get_heuristic()
                         state.score += len(self.move_searcher.nodes_to_goal)
                         state.parent = soko_state
+                        
                         if state in self.open_list:
                             index = self.open_list.index(state)
                             if state.score < self.open_list[index].score:
