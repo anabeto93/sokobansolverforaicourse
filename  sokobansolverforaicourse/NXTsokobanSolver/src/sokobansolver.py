@@ -25,6 +25,8 @@ class SokobanState():
         self.cost = float('inf')
     
     def __eq__(self, other):
+        if other == None:
+            return False
         for jewel in self.map_jewels:
             if jewel not in other.map_jewels:
                 return False
@@ -35,6 +37,17 @@ class SokobanState():
     def get_copy(self):
         return copy.deepcopy(self)
     
+    def update_jewel(self, jewel, new_coordinates):
+        self.map_layout[jewel[0]][jewel[1]] = self.map_rep.empty
+        self.map_layout[new_coordinates[0]][new_coordinates[1]] = self.map_rep.jewel
+        index = self.map_jewels.index(jewel)
+        self.map_jewels[index] = new_coordinates
+        
+    def update_man(self, new_coordinates):
+        self.map_layout[self.map_man[0]][self.map_man[1]] = self.map_rep.empty
+        self.map_layout[new_coordinates[0]][new_coordinates[1]] = self.map_rep.man
+        self.map_man = new_coordinates
+        
 class MapParser():
     def __init__(self, map_path, map_rep):
         self.map_path = self._get_full_path(map_path)
@@ -88,12 +101,12 @@ class MapParser():
 
 class AStarSearcher():
     def __init__(self):
-        self.closed_states = []
         self.fringe = []
         self.closed_states = []
         self.state_goal = None
         self.state_initial = None
         self.path_to_goal = []
+        self.run_counter = 0
         
     def evaluate_state(self, state):
         raise NotImplementedError
@@ -111,7 +124,9 @@ class AStarSearcher():
         return state.cost
     
     def search(self):
-        self.path_to_goal = None
+        self.fringe = []
+        self.closed_states = []
+        self.path_to_goal = []
         self.fringe.append(self.state_initial)
         while len(self.fringe) > 0:
             self.fringe.sort(key = self.get_cost)
@@ -137,7 +152,10 @@ class AStarSearcher():
                             self.fringe.append(state)
         return False
     
-class ManPathFinder(AStarSearcher):    
+class ManPathFinder(AStarSearcher):
+    def __init__(self):
+        super(ManPathFinder, self).__init__()
+        
     def is_goal_state(self, state):
         if state.map_man == self.state_goal.map_man:
             return True
@@ -169,6 +187,7 @@ class ManPathFinder(AStarSearcher):
 
 class SokobanSolver(AStarSearcher):
     def __init__(self):
+        super(SokobanSolver, self).__init__()
         self.man_path_finder = ManPathFinder()
         self.state_soko_init = MapParser('/rsc/map2.txt', map_rep).create_initial_sokoban_state()
     
@@ -199,19 +218,81 @@ class SokobanSolver(AStarSearcher):
         return score + heurist
         
     def expand_fringe(self, state):
+        self.run_counter += 1
+        #print(isinstance(self, SokobanSolver))
+        print(self.run_counter)
         fringe = []
         for jewel in state.map_jewels:
             
+            #Test up
+            new_state = self.get_new_jewel_position(state, jewel, 'UP')
+            if new_state != None:
+                fringe.append(new_state)
+            #Test down
+            new_state = self.get_new_jewel_position(state, jewel, 'DOWN')
+            if new_state != None:
+                fringe.append(new_state)
+            #Test left
+            new_state = self.get_new_jewel_position(state, jewel, 'LEFT')
+            if new_state != None:
+                fringe.append(new_state)
+            #Test right
+            new_state = self.get_new_jewel_position(state, jewel, 'RIGHT')
+            if new_state != None:
+                fringe.append(new_state)
+        return fringe
+                
+    def get_new_jewel_position(self, state, jewel, direction):
+        if direction == 'UP':
+            new_jewel_coordinate = [jewel[0], jewel[1] - 1]
+            new_man_coordinate = [jewel[0], jewel[1] + 1]
+        elif direction == 'DOWN':
+            new_jewel_coordinate = [jewel[0], jewel[1] + 1]
+            new_man_coordinate = [jewel[0], jewel[1] - 1]  
+        elif direction == 'LEFT':
+            new_jewel_coordinate = [jewel[0] - 1, jewel[1]]
+            new_man_coordinate = [jewel[0] + 1, jewel[1]]  
+        elif direction == 'RIGHT':
+            new_jewel_coordinate = [jewel[0] + 1, jewel[1]]
+            new_man_coordinate = [jewel[0] - 1, jewel[1]]
         
+        square_type = state.map_layout[new_jewel_coordinate[0]][new_jewel_coordinate[1]]
+        if square_type == state.map_rep.empty or square_type == state.map_rep.goal:
+                #Test if the state would be valid
+                new_state = state.get_copy()
+                #Test if the man can get to the correct spot
+                new_state.update_man(new_man_coordinate)
+                self.man_path_finder.state_goal = new_state
+                self.man_path_finder.state_initial = state
+                if self.man_path_finder.search():
+                    #Move the man and the jewel
+                    new_state.update_man(jewel)
+                    new_state.update_jewel(jewel, new_jewel_coordinate)
+                    return new_state
+        return None
+    
+    def is_state_valid(self, state):
+        for jewel in state.map_jewels:
+            if jewel in state.map_goals:
+                continue
+            
+            up_square = state.map_layout[jewel[0]][jewel[1] - 1]
+            down_square = state.map_layout[jewel[0]][jewel[1] + 1]
+            left_square = state.map_layout[jewel[0] - 1][jewel[1]]
+            right_square = state.map_layout[jewel[0] + 1][jewel[1]]
+            
+            if up_square == state.map_rep.wall or down_square == state.map_rep.wall:
+                if left_square == state.map_rep.wall or right_square == state.map_rep.wall:
+                    return False
+        return True
+    
 if __name__ == '__main__':
     map_rep = MapRepresantation()
     parser = MapParser('/rsc/map2.txt', map_rep)
     state_soko_init = parser.create_initial_sokoban_state()
-    state_man_goal = state_soko_init.get_copy()
-    state_man_goal.map_man = [2, 4]
-    man_path_finder = ManPathFinder()
-    man_path_finder.state_initial = state_soko_init 
-    man_path_finder.state_goal = state_man_goal
-    solution = man_path_finder.search()
-    print(solution)
-    pass 
+    solver = SokobanSolver()
+    solver.state_initial = state_soko_init
+    if solver.search():
+        print('Found solution')
+    else:
+        print('Could not find solution') 
