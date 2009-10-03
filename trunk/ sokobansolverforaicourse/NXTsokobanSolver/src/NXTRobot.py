@@ -427,6 +427,14 @@ class SokoSolver():
             down_square = state.map_layout[jewel[0]][jewel[1] + 1]
             if (left_square == 'X' or right_square == 'X') and (up_square == 'X' or down_square == 'X'):
                 return False
+            
+            if jewel[0] == 1:
+                return False
+            if jewel[1] == 1 and jewel[0] > 4:
+                return False
+            if jewel[1] == 5 and jewel[0] > 3:
+                return False
+            
         return True
             
     def expand(self, soko_state):

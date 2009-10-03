@@ -285,6 +285,14 @@ class SokobanSolver(AStarSearcher):
             if up_square == state.map_rep.wall or down_square == state.map_rep.wall:
                 if left_square == state.map_rep.wall or right_square == state.map_rep.wall:
                     return False
+            
+            if jewel[0] == 1:
+                return False
+            if jewel[1] == 1 and jewel[0] > 4:
+                return False
+            if jewel[1] == 5 and jewel[0] > 3:
+                return False
+            
         return True
     
 if __name__ == '__main__':
