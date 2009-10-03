@@ -268,6 +268,7 @@ class SokobanSolver(AStarSearcher):
                     #Move the man and the jewel
                     new_state.update_man(jewel)
                     new_state.update_jewel(jewel, new_jewel_coordinate)
+                    new_state.parent = state
                     return new_state
         return None
     
