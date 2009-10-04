@@ -29,7 +29,7 @@ public class SokobanSearcher extends AStarSearch
 			}
 			score += minimumDistanceToGoal;
 		}
-		return score;
+		return score + state.manMoveLength;
 	}
 
 	@Override
@@ -84,7 +84,8 @@ public class SokobanSearcher extends AStarSearch
 							
 							manGoal.jewels.set(manStart.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
 							manGoal.emptys.remove(jewelMoves[i]);
-							manGoal.parentState = state;
+							manGoal.manMoveLength = manFinder.constructPathToGoal().size();
+							manGoal.parentState = state;				
 							fringe.add(manGoal);
 						}
 					}
@@ -118,6 +119,14 @@ public class SokobanSearcher extends AStarSearch
 			{
 				return false;
 			}
+			
+			if(jewel.x == 1)
+				return false;
+			if(jewel.y == 1)
+				return false;
+			if(jewel.y == 5 && jewel.x > 4)
+				return false;
+			
 		}
 		return true;
 	}
