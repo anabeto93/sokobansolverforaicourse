@@ -70,20 +70,14 @@ public class SokobanSolver {
 			long timeTaken = (timeEnd - timeStart) / 1000;
 			System.out.println("Time taken: " + timeTaken + " seconds");
 			ArrayList<SokobanState> steps = searcher.constructPathToGoal();
+			String solution = "";
 			for(SokobanState step : steps)
 			{
+				solution += step.moveAction;
 				System.out.println(step.moveAction);
 				mapParse.printMap(step);
-				try
-				{
-					Thread.sleep(10);
-				}
-				catch (InterruptedException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
+			System.out.println("Solution: " + solution);
 		}
 		catch (CloneNotSupportedException e)
 		{
