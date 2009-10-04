@@ -9,6 +9,7 @@ public class SokobanState implements Cloneable
 	public ArrayList<Square> jewels = new ArrayList<Square>();
 	public SokobanState parentState = null;
 	public Square man;
+	public int manMoveLength = 0;
 	public int score = Integer.MAX_VALUE;
 	
 	@Override 
@@ -21,6 +22,7 @@ public class SokobanState implements Cloneable
 		stateClone.man = this.man;
 		stateClone.score = this.score;
 		stateClone.parentState = this.parentState;
+		stateClone.manMoveLength = this.manMoveLength;
 		return stateClone;
 	}
 	
