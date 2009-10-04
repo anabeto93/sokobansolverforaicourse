@@ -18,23 +18,33 @@ public class ManPathfinder extends AStarSearch
 		try
 		{
 			Square[] moves = new Square[4];
+			char[] action = new char[4];
+			
 			//Up
 			moves[0] = new Square(state.man.x, state.man.y - 1);
+			action[0] = 'u';
+			
 			//Down
 			moves[1] = new Square(state.man.x, state.man.y + 1);
+			action[1] = 'd';
+			
 			//Left
 			moves[2] = new Square(state.man.x - 1, state.man.y);
+			action[2] = 'l';
+			
 			//Right
 			moves[3] = new Square(state.man.x + 1, state.man.y);			
+			action[3] = 'r';
 			
-			for(Square direction : moves)
+			for(int i = 0; i < 4; i++)
 			{
-				if(!state.jewels.contains(direction) && state.emptys.contains(direction))
+				if(!state.jewels.contains(moves[i]) && state.emptys.contains(moves[i]))
 				{
 					SokobanState stateNew;
 					stateNew = (SokobanState)state.clone();		
-					stateNew.man = (Square)direction.clone();
+					stateNew.man = (Square)moves[i].clone();
 					stateNew.parentState = state;
+					stateNew.moveAction = action[i];
 					fringe.add(stateNew);
 				}
 			}

@@ -63,30 +63,81 @@ public class SokobanSearcher extends AStarSearch
 				{
 					try
 					{
-						SokobanState manStart = (SokobanState)state.clone();						
-						//manStart.jewels.set(manStart.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
-						//manStart.emptys.remove(jewelMoves[i]);
-						//manStart.emptys.add((Square)jewel.clone());
-						
-						SokobanState manGoal = (SokobanState)manStart.clone();
-						manGoal.man = (Square)manMoves[i].clone();
-						//manGoal.emptys.add((Square)manStart.man.clone());
-						//manGoal.emptys.remove(manMoves[i]);
-						
-						if(manFinder.search(manStart, manGoal))
+						//Test if the man is already standing in the correct position. If so, simply move him and the jewel
+						if(manMoves.equals(state.man))
 						{
-							//Move the man to the correct position and add to fringe
-							manGoal.man = (Square)jewel.clone();
-							
-							manGoal.emptys.add((Square)manStart.man.clone());
-							manGoal.emptys.add((Square)manGoal.man.clone());
+							SokobanState manGoal = (SokobanState)state.clone();
 							manGoal.emptys.add((Square)jewel.clone());
-							
-							manGoal.jewels.set(manStart.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
+							manGoal.jewels.set(state.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
 							manGoal.emptys.remove(jewelMoves[i]);
-							manGoal.manMoveLength = manFinder.constructPathToGoal().size();
-							manGoal.parentState = state;				
+							manGoal.man = (Square)manMoves[i].clone();
+							//Update the move string
+							manGoal.movesActionsToState = ""; 
+							switch(i)
+							{
+							case 0:
+								manGoal.movesActionsToState = "U";
+								break;
+							case 1:
+								manGoal.movesActionsToState = "D";
+								break;
+							case 2:
+								manGoal.movesActionsToState = "L";
+								break;
+							case 3:
+								manGoal.movesActionsToState = "R";
+								break;
+							}
 							fringe.add(manGoal);
+						}
+						else //See if the man can get to the correct position
+						{
+							SokobanState manStart = (SokobanState)state.clone();						
+							
+							SokobanState manGoal = (SokobanState)manStart.clone();
+							manGoal.man = (Square)manMoves[i].clone();
+	
+							
+							if(manFinder.search(manStart, manGoal))
+							{
+								//Move the man to the correct position and add to fringe
+								manGoal.man = (Square)jewel.clone();
+								
+								manGoal.emptys.add((Square)manStart.man.clone());
+								manGoal.emptys.add((Square)manGoal.man.clone());
+								manGoal.emptys.add((Square)jewel.clone());
+								
+								manGoal.jewels.set(manStart.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
+								manGoal.emptys.remove(jewelMoves[i]);
+								manGoal.manMoveLength = manFinder.constructPathToGoal().size();
+								
+								//Create string describing all moves taken from initial state to goal state!
+								manGoal.movesActionsToState = "";
+								ArrayList<Character> allManMoves = manFinder.getAllMovesToState();
+								manGoal.parentState = state;
+								for(Character move : allManMoves)
+								{
+									manGoal.movesActionsToState += move;
+								}
+								//Add the last move where the goal is actually moved, Remember that we only move up to the correct position wit
+								//the finder, we do the last move 'manually'
+								switch(i)
+								{
+								case 0:
+									manGoal.movesActionsToState += "U";
+									break;
+								case 1:
+									manGoal.movesActionsToState += "D";
+									break;
+								case 2:
+									manGoal.movesActionsToState += "L";
+									break;
+								case 3:
+									manGoal.movesActionsToState += "R";
+									break;
+								}
+								fringe.add(manGoal);
+							}
 						}
 					}
 					catch (CloneNotSupportedException e)
