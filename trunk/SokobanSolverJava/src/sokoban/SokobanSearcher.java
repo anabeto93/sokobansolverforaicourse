@@ -166,13 +166,190 @@ public class SokobanSearcher extends AStarSearch
 			{
 				return false;
 			}
+
+			if(!up)
+			{
+				//Check if up is a hole, before reaching a wall
+				boolean upEscaped = false;
+				Square t;
+				for(int i = 0; i < 10; i++)
+				{
+					//first go right
+					t = new Square(jewel.x + i, jewel.y);
+					if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						if(jewel.y != 1)
+							System.out.println("Error Y1 in algo!" + jewel.y);
+						return false;
+					}
+					t = new Square(jewel.x + i, jewel.y - 1);
+					if((state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						upEscaped = true;
+						break;
+					}
+				}
+				if(!upEscaped)
+				{
+					for(int i = 0; i < 10; i++)
+					{
+						//Then go left
+						t = new Square(jewel.x - i, jewel.y);
+						if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							if(jewel.y != 1)
+								System.out.println("Error Y1 in algo!" + jewel.y + "D");
+							return false;
+						}
+						t = new Square(jewel.x - i, jewel.y - 1);
+						if((state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							break;
+						}
+					}
+				}
+			}
 			
+			if(!down)
+			{
+				//Check if up is a hole, before reaching a wall
+				boolean downEscaped = false;
+				Square t;
+				for(int i = 0; i < 10; i++)
+				{
+					//first go right
+					t = new Square(jewel.x + i, jewel.y);
+					if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						if(jewel.y != 5 || jewel.x <= 4)
+							System.out.println("Error Y2 in algo! " + down);
+						return false;
+					}
+					t = new Square(jewel.x + i, jewel.y + 1);
+					if((state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						downEscaped = true;
+						break;
+					}
+				}
+				if(!downEscaped)
+				{
+					for(int i = 0; i < 10; i++)
+					{
+						//Then go left
+						t = new Square(jewel.x - i, jewel.y);
+						if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							if(jewel.y != 5 || jewel.x <= 4)
+								System.out.println("Error Y2 in algo! " + down);
+							return false;
+						}
+						t = new Square(jewel.x - i, jewel.y + 1);
+						if((state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							break;
+						}
+					}
+				}
+			}
+			
+			if(!left)
+			{				
+				//Check if up is a hole, before reaching a wall
+				boolean leftEscaped = false;
+				Square t;
+				for(int i = 0; i < 10; i++)
+				{
+					//first go up
+					t = new Square(jewel.x, jewel.y - i);
+					if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						if(jewel.x != 1)
+							System.out.println("Error X in algo!" + up);
+						return false;
+					}
+					t = new Square(jewel.x - 1, jewel.y - i);
+					if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						leftEscaped = true;
+						break;
+					}
+				}
+				if(!leftEscaped)
+				{
+					for(int i = 0; i < 10; i++)
+					{
+						//Then go down
+						t = new Square(jewel.x, jewel.y + i);
+						if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							if(jewel.x != 1)
+								System.out.println("Error X in algo!" + up);
+							return false;
+						}
+						t = new Square(jewel.x - 1, jewel.y + i);
+						if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							break;
+						}
+					}
+				}
+				
+			}
+			
+			if(!right)
+			{				
+				//Check if up is a hole, before reaching a wall
+				boolean rightEscaped = false;
+				Square t;
+				for(int i = 0; i < 10; i++)
+				{
+					//first go up
+					t = new Square(jewel.x, jewel.y - i);
+					if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						System.out.println("Error X in algo!" + up);
+						return false;
+					}
+					t = new Square(jewel.x + 1, jewel.y - i);
+					if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+					{
+						rightEscaped = true;
+						break;
+					}
+				}
+				if(!rightEscaped)
+				{
+					for(int i = 0; i < 10; i++)
+					{
+						//Then go down
+						t = new Square(jewel.x, jewel.y + i);
+						if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							System.out.println("Error X in algo!" + up);
+							return false;
+						}
+						t = new Square(jewel.x + 1, jewel.y + i);
+						if(!(state.emptys.contains(t) || state.jewels.contains(t) || state.man.equals(t) || state.goals.contains(t)))
+						{
+							break;
+						}
+					}
+				}
+			}
 			if(jewel.x == 1)
-				return false;
+				System.out.println("Error X in algo!" + up);
 			if(jewel.y == 1)
-				return false;
+				System.out.println("Error Y1 in algo!" + up);
 			if(jewel.y == 5 && jewel.x > 4)
-				return false;
+				System.out.println("Error Y2 in algo! " + down);
+			
+//			if(jewel.x == 1)
+//				return false;
+//			if(jewel.y == 1)
+//				return false;
+//			if(jewel.y == 5 && jewel.x > 4)
+//				return false;
 			
 		}
 		return true;
