@@ -56,6 +56,7 @@ public class SokobanSolver {
 			//goal.jewels = (ArrayList<Square>)goal.goals.clone();
 			
 			SokobanSearcher searcher = new SokobanSearcher();
+			long timeStart = System.currentTimeMillis();
 			if(searcher.search(initial, goal))
 			{
 				System.out.println("Solution found");
@@ -65,6 +66,9 @@ public class SokobanSolver {
 			{
 				System.out.println("Solution NOOOOT found");
 			}
+			long timeEnd = System.currentTimeMillis();
+			long timeTaken = (timeEnd - timeStart) / 1000;
+			System.out.println("Time taken: " + timeTaken + " seconds");
 			ArrayList<SokobanState> steps = searcher.constructPathToGoal();
 			for(SokobanState step : steps)
 			{
