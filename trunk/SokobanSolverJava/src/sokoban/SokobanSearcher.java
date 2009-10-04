@@ -64,7 +64,7 @@ public class SokobanSearcher extends AStarSearch
 					try
 					{
 						//Test if the man is already standing in the correct position. If so, simply move him and the jewel
-						if(manMoves.equals(state.man))
+						if(manMoves[i].equals(state.man))
 						{
 							SokobanState manGoal = (SokobanState)state.clone();
 							manGoal.emptys.add((Square)jewel.clone());
@@ -72,6 +72,7 @@ public class SokobanSearcher extends AStarSearch
 							manGoal.emptys.remove(jewelMoves[i]);
 							manGoal.man = (Square)manMoves[i].clone();
 							//Update the move string
+							manGoal.parentState = state;
 							manGoal.movesActionsToState = ""; 
 							switch(i)
 							{
