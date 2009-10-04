@@ -1,0 +1,100 @@
+\hypertarget{classsokoban_1_1SokobanSearcher}{
+\section{sokoban.SokobanSearcher Class Reference}
+\label{classsokoban_1_1SokobanSearcher}\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+}
+Inheritance diagram for sokoban.SokobanSearcher::\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2cm]{classsokoban_1_1SokobanSearcher}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+int \hyperlink{classsokoban_1_1SokobanSearcher_897cc65b82be53f807b06a71a822a107}{evaluateState} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state, \hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}{stateGoal})
+\item 
+ArrayList$<$ \hyperlink{classsokoban_1_1SokobanState}{SokobanState} $>$ \hyperlink{classsokoban_1_1SokobanSearcher_fed3f74dd438abffdebe84a6a4d96e62}{expandFringe} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state)
+\item 
+boolean \hyperlink{classsokoban_1_1SokobanSearcher_e5825be60850700a399b70cab9549ab3}{isValid} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state)
+\item 
+boolean \hyperlink{classsokoban_1_1SokobanSearcher_e71f7570b3b8f44fae9c5999ef1cb585}{isGoalState} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state, \hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}{stateGoal})
+\item 
+void \hyperlink{classsokoban_1_1SokobanSearcher_d180c4da1ca3b7099d1e820843c619d0}{infoFunction} ()
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+\hyperlink{classsokoban_1_1ManPathfinder}{ManPathfinder} \hyperlink{classsokoban_1_1SokobanSearcher_9c7a40209ca21c1a14ca780c90859571}{manFinder} = new \hyperlink{classsokoban_1_1ManPathfinder}{ManPathfinder}()
+\item 
+int \hyperlink{classsokoban_1_1SokobanSearcher_cafbb5effcf6f77396cacec598a3a16e}{runCounter} = 0
+\end{CompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classsokoban_1_1SokobanSearcher_897cc65b82be53f807b06a71a822a107}{
+\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}!evaluateState@{evaluateState}}
+\index{evaluateState@{evaluateState}!sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+\subsubsection[{evaluateState}]{\setlength{\rightskip}{0pt plus 5cm}int sokoban.SokobanSearcher.evaluateState ({\bf SokobanState} {\em state}, \/  {\bf SokobanState} {\em stateGoal})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classsokoban_1_1SokobanSearcher_897cc65b82be53f807b06a71a822a107}
+
+
+
+
+Implements \hyperlink{classsokoban_1_1AStarSearch_7f5d111fd7504dc6d47dece202a26b6e}{sokoban.AStarSearch}.\hypertarget{classsokoban_1_1SokobanSearcher_fed3f74dd438abffdebe84a6a4d96e62}{
+\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}!expandFringe@{expandFringe}}
+\index{expandFringe@{expandFringe}!sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+\subsubsection[{expandFringe}]{\setlength{\rightskip}{0pt plus 5cm}ArrayList$<${\bf SokobanState}$>$ sokoban.SokobanSearcher.expandFringe ({\bf SokobanState} {\em state})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classsokoban_1_1SokobanSearcher_fed3f74dd438abffdebe84a6a4d96e62}
+
+
+
+
+Implements \hyperlink{classsokoban_1_1AStarSearch_d898d53b9ed79238fca960bf6f453b7e}{sokoban.AStarSearch}.\hypertarget{classsokoban_1_1SokobanSearcher_d180c4da1ca3b7099d1e820843c619d0}{
+\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}!infoFunction@{infoFunction}}
+\index{infoFunction@{infoFunction}!sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+\subsubsection[{infoFunction}]{\setlength{\rightskip}{0pt plus 5cm}void sokoban.SokobanSearcher.infoFunction ()\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classsokoban_1_1SokobanSearcher_d180c4da1ca3b7099d1e820843c619d0}
+
+
+
+
+Implements \hyperlink{classsokoban_1_1AStarSearch_76eb557a34fba75c6b7a5708288cbbe2}{sokoban.AStarSearch}.\hypertarget{classsokoban_1_1SokobanSearcher_e71f7570b3b8f44fae9c5999ef1cb585}{
+\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}!isGoalState@{isGoalState}}
+\index{isGoalState@{isGoalState}!sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+\subsubsection[{isGoalState}]{\setlength{\rightskip}{0pt plus 5cm}boolean sokoban.SokobanSearcher.isGoalState ({\bf SokobanState} {\em state}, \/  {\bf SokobanState} {\em stateGoal})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classsokoban_1_1SokobanSearcher_e71f7570b3b8f44fae9c5999ef1cb585}
+
+
+
+
+Implements \hyperlink{classsokoban_1_1AStarSearch_8ac8ea41b08c5f3ba2c41e0b0e53c73f}{sokoban.AStarSearch}.\hypertarget{classsokoban_1_1SokobanSearcher_e5825be60850700a399b70cab9549ab3}{
+\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}!isValid@{isValid}}
+\index{isValid@{isValid}!sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+\subsubsection[{isValid}]{\setlength{\rightskip}{0pt plus 5cm}boolean sokoban.SokobanSearcher.isValid ({\bf SokobanState} {\em state})\hspace{0.3cm}{\tt  \mbox{[}virtual\mbox{]}}}}
+\label{classsokoban_1_1SokobanSearcher_e5825be60850700a399b70cab9549ab3}
+
+
+
+
+Implements \hyperlink{classsokoban_1_1AStarSearch_d41e3201335321840a0d8bac8a66f86f}{sokoban.AStarSearch}.
+
+\subsection{Member Data Documentation}
+\hypertarget{classsokoban_1_1SokobanSearcher_9c7a40209ca21c1a14ca780c90859571}{
+\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}!manFinder@{manFinder}}
+\index{manFinder@{manFinder}!sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+\subsubsection[{manFinder}]{\setlength{\rightskip}{0pt plus 5cm}{\bf ManPathfinder} {\bf sokoban.SokobanSearcher.manFinder} = new {\bf ManPathfinder}()\hspace{0.3cm}{\tt  \mbox{[}private\mbox{]}}}}
+\label{classsokoban_1_1SokobanSearcher_9c7a40209ca21c1a14ca780c90859571}
+
+
+\hypertarget{classsokoban_1_1SokobanSearcher_cafbb5effcf6f77396cacec598a3a16e}{
+\index{sokoban::SokobanSearcher@{sokoban::SokobanSearcher}!runCounter@{runCounter}}
+\index{runCounter@{runCounter}!sokoban::SokobanSearcher@{sokoban::SokobanSearcher}}
+\subsubsection[{runCounter}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf sokoban.SokobanSearcher.runCounter} = 0\hspace{0.3cm}{\tt  \mbox{[}private\mbox{]}}}}
+\label{classsokoban_1_1SokobanSearcher_cafbb5effcf6f77396cacec598a3a16e}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+/filedisc/Workspace/Eclipse\_\-linux\_\-64BIT/SokobanSolverJava/src/sokoban/\hyperlink{SokobanSearcher_8java}{SokobanSearcher.java}\end{CompactItemize}

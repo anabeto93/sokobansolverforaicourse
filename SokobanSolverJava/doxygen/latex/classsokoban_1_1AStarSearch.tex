@@ -1,0 +1,144 @@
+\hypertarget{classsokoban_1_1AStarSearch}{
+\section{sokoban.AStarSearch Class Reference}
+\label{classsokoban_1_1AStarSearch}\index{sokoban::AStarSearch@{sokoban::AStarSearch}}
+}
+Inheritance diagram for sokoban.AStarSearch::\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2cm]{classsokoban_1_1AStarSearch}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{CompactItemize}
+\item 
+class \hyperlink{classsokoban_1_1AStarSearch_1_1ScoreComparator}{ScoreComparator}
+\end{CompactItemize}
+\subsection*{Public Member Functions}
+\begin{CompactItemize}
+\item 
+abstract ArrayList$<$ \hyperlink{classsokoban_1_1SokobanState}{SokobanState} $>$ \hyperlink{classsokoban_1_1AStarSearch_d898d53b9ed79238fca960bf6f453b7e}{expandFringe} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state)
+\item 
+abstract int \hyperlink{classsokoban_1_1AStarSearch_7f5d111fd7504dc6d47dece202a26b6e}{evaluateState} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state, \hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}{stateGoal})
+\item 
+abstract boolean \hyperlink{classsokoban_1_1AStarSearch_d41e3201335321840a0d8bac8a66f86f}{isValid} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state)
+\item 
+abstract boolean \hyperlink{classsokoban_1_1AStarSearch_8ac8ea41b08c5f3ba2c41e0b0e53c73f}{isGoalState} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} state, \hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}{stateGoal})
+\item 
+abstract void \hyperlink{classsokoban_1_1AStarSearch_76eb557a34fba75c6b7a5708288cbbe2}{infoFunction} ()
+\item 
+ArrayList$<$ \hyperlink{classsokoban_1_1SokobanState}{SokobanState} $>$ \hyperlink{classsokoban_1_1AStarSearch_8c634122d21a511f5df4587d005ab8fb}{constructPathToGoal} ()
+\item 
+boolean \hyperlink{classsokoban_1_1AStarSearch_0e98e5fd53a87168775b34c637eca896}{search} (\hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_901a2b83227c005d77f95879e8059081}{stateInitial}, \hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}{stateGoal})
+\end{CompactItemize}
+\subsection*{Protected Attributes}
+\begin{CompactItemize}
+\item 
+ArrayList$<$ \hyperlink{classsokoban_1_1SokobanState}{SokobanState} $>$ \hyperlink{classsokoban_1_1AStarSearch_1f685c2127fec511adaca05855d3c6ae}{openList}
+\item 
+ArrayList$<$ \hyperlink{classsokoban_1_1SokobanState}{SokobanState} $>$ \hyperlink{classsokoban_1_1AStarSearch_a2d06ef736198f6c282391db3af61317}{closedList}
+\end{CompactItemize}
+\subsection*{Private Attributes}
+\begin{CompactItemize}
+\item 
+\hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}{stateGoal}
+\item 
+\hyperlink{classsokoban_1_1SokobanState}{SokobanState} \hyperlink{classsokoban_1_1AStarSearch_901a2b83227c005d77f95879e8059081}{stateInitial}
+\end{CompactItemize}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{classsokoban_1_1AStarSearch_8c634122d21a511f5df4587d005ab8fb}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!constructPathToGoal@{constructPathToGoal}}
+\index{constructPathToGoal@{constructPathToGoal}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{constructPathToGoal}]{\setlength{\rightskip}{0pt plus 5cm}ArrayList$<${\bf SokobanState}$>$ sokoban.AStarSearch.constructPathToGoal ()}}
+\label{classsokoban_1_1AStarSearch_8c634122d21a511f5df4587d005ab8fb}
+
+
+\hypertarget{classsokoban_1_1AStarSearch_7f5d111fd7504dc6d47dece202a26b6e}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!evaluateState@{evaluateState}}
+\index{evaluateState@{evaluateState}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{evaluateState}]{\setlength{\rightskip}{0pt plus 5cm}abstract int sokoban.AStarSearch.evaluateState ({\bf SokobanState} {\em state}, \/  {\bf SokobanState} {\em stateGoal})\hspace{0.3cm}{\tt  \mbox{[}pure virtual\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_7f5d111fd7504dc6d47dece202a26b6e}
+
+
+
+
+Implemented in \hyperlink{classsokoban_1_1ManPathfinder_62decfb98167d1f63ea33408c5130e00}{sokoban.ManPathfinder}, and \hyperlink{classsokoban_1_1SokobanSearcher_897cc65b82be53f807b06a71a822a107}{sokoban.SokobanSearcher}.\hypertarget{classsokoban_1_1AStarSearch_d898d53b9ed79238fca960bf6f453b7e}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!expandFringe@{expandFringe}}
+\index{expandFringe@{expandFringe}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{expandFringe}]{\setlength{\rightskip}{0pt plus 5cm}abstract ArrayList$<${\bf SokobanState}$>$ sokoban.AStarSearch.expandFringe ({\bf SokobanState} {\em state})\hspace{0.3cm}{\tt  \mbox{[}pure virtual\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_d898d53b9ed79238fca960bf6f453b7e}
+
+
+
+
+Implemented in \hyperlink{classsokoban_1_1ManPathfinder_096cfcfa1b5506db10dc160810ffca49}{sokoban.ManPathfinder}, and \hyperlink{classsokoban_1_1SokobanSearcher_fed3f74dd438abffdebe84a6a4d96e62}{sokoban.SokobanSearcher}.\hypertarget{classsokoban_1_1AStarSearch_76eb557a34fba75c6b7a5708288cbbe2}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!infoFunction@{infoFunction}}
+\index{infoFunction@{infoFunction}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{infoFunction}]{\setlength{\rightskip}{0pt plus 5cm}abstract void sokoban.AStarSearch.infoFunction ()\hspace{0.3cm}{\tt  \mbox{[}pure virtual\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_76eb557a34fba75c6b7a5708288cbbe2}
+
+
+
+
+Implemented in \hyperlink{classsokoban_1_1ManPathfinder_d1511ea4db735c0143acfd91352014d8}{sokoban.ManPathfinder}, and \hyperlink{classsokoban_1_1SokobanSearcher_d180c4da1ca3b7099d1e820843c619d0}{sokoban.SokobanSearcher}.\hypertarget{classsokoban_1_1AStarSearch_8ac8ea41b08c5f3ba2c41e0b0e53c73f}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!isGoalState@{isGoalState}}
+\index{isGoalState@{isGoalState}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{isGoalState}]{\setlength{\rightskip}{0pt plus 5cm}abstract boolean sokoban.AStarSearch.isGoalState ({\bf SokobanState} {\em state}, \/  {\bf SokobanState} {\em stateGoal})\hspace{0.3cm}{\tt  \mbox{[}pure virtual\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_8ac8ea41b08c5f3ba2c41e0b0e53c73f}
+
+
+
+
+Implemented in \hyperlink{classsokoban_1_1ManPathfinder_279eb3ffae4e5ca01fba414916fa9f40}{sokoban.ManPathfinder}, and \hyperlink{classsokoban_1_1SokobanSearcher_e71f7570b3b8f44fae9c5999ef1cb585}{sokoban.SokobanSearcher}.\hypertarget{classsokoban_1_1AStarSearch_d41e3201335321840a0d8bac8a66f86f}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!isValid@{isValid}}
+\index{isValid@{isValid}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{isValid}]{\setlength{\rightskip}{0pt plus 5cm}abstract boolean sokoban.AStarSearch.isValid ({\bf SokobanState} {\em state})\hspace{0.3cm}{\tt  \mbox{[}pure virtual\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_d41e3201335321840a0d8bac8a66f86f}
+
+
+
+
+Implemented in \hyperlink{classsokoban_1_1ManPathfinder_b32f8b3f28f89843bf9942f50faed667}{sokoban.ManPathfinder}, and \hyperlink{classsokoban_1_1SokobanSearcher_e5825be60850700a399b70cab9549ab3}{sokoban.SokobanSearcher}.\hypertarget{classsokoban_1_1AStarSearch_0e98e5fd53a87168775b34c637eca896}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!search@{search}}
+\index{search@{search}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{search}]{\setlength{\rightskip}{0pt plus 5cm}boolean sokoban.AStarSearch.search ({\bf SokobanState} {\em stateInitial}, \/  {\bf SokobanState} {\em stateGoal})}}
+\label{classsokoban_1_1AStarSearch_0e98e5fd53a87168775b34c637eca896}
+
+
+
+
+\subsection{Member Data Documentation}
+\hypertarget{classsokoban_1_1AStarSearch_a2d06ef736198f6c282391db3af61317}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!closedList@{closedList}}
+\index{closedList@{closedList}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{closedList}]{\setlength{\rightskip}{0pt plus 5cm}ArrayList$<${\bf SokobanState}$>$ {\bf sokoban.AStarSearch.closedList}\hspace{0.3cm}{\tt  \mbox{[}protected\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_a2d06ef736198f6c282391db3af61317}
+
+
+\hypertarget{classsokoban_1_1AStarSearch_1f685c2127fec511adaca05855d3c6ae}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!openList@{openList}}
+\index{openList@{openList}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{openList}]{\setlength{\rightskip}{0pt plus 5cm}ArrayList$<${\bf SokobanState}$>$ {\bf sokoban.AStarSearch.openList}\hspace{0.3cm}{\tt  \mbox{[}protected\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_1f685c2127fec511adaca05855d3c6ae}
+
+
+\hypertarget{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!stateGoal@{stateGoal}}
+\index{stateGoal@{stateGoal}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{stateGoal}]{\setlength{\rightskip}{0pt plus 5cm}{\bf SokobanState} {\bf sokoban.AStarSearch.stateGoal}\hspace{0.3cm}{\tt  \mbox{[}private\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_b79570b0700c83ab7f3ef553923b5c00}
+
+
+\hypertarget{classsokoban_1_1AStarSearch_901a2b83227c005d77f95879e8059081}{
+\index{sokoban::AStarSearch@{sokoban::AStarSearch}!stateInitial@{stateInitial}}
+\index{stateInitial@{stateInitial}!sokoban::AStarSearch@{sokoban::AStarSearch}}
+\subsubsection[{stateInitial}]{\setlength{\rightskip}{0pt plus 5cm}{\bf SokobanState} {\bf sokoban.AStarSearch.stateInitial}\hspace{0.3cm}{\tt  \mbox{[}private\mbox{]}}}}
+\label{classsokoban_1_1AStarSearch_901a2b83227c005d77f95879e8059081}
+
+
+
+
+The documentation for this class was generated from the following file:\begin{CompactItemize}
+\item 
+/filedisc/Workspace/Eclipse\_\-linux\_\-64BIT/SokobanSolverJava/src/sokoban/\hyperlink{AStarSearch_8java}{AStarSearch.java}\end{CompactItemize}
