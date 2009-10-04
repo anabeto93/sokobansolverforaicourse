@@ -166,7 +166,9 @@ public class SokobanSearcher extends AStarSearch
 			{
 				return false;
 			}
-
+			
+			//Now check to see if the jewel is positioned along a wall in a way that makes it impossible to get it away from the wall,
+			//and onto a goal!
 			if(!up)
 			{
 				//Check if up is a hole, before reaching a wall
