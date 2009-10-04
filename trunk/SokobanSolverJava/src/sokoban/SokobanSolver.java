@@ -72,7 +72,7 @@ public class SokobanSolver {
 			ArrayList<SokobanState> steps = searcher.constructPathToGoal();
 			for(SokobanState step : steps)
 			{
-				System.out.println(step.movesActionsToState);
+				System.out.println(step.moveAction);
 				mapParse.printMap(step);
 				try
 				{
