@@ -28,6 +28,18 @@ public abstract class AStarSearch
 		
 	}
 	
+	public ArrayList<Character> getAllMovesToState()
+	{
+		ArrayList<Character> moves = new ArrayList<Character>();
+		SokobanState currentState = stateGoal;
+		while(currentState != stateInitial)
+		{
+			moves.add(0, currentState.moveAction);
+			currentState = currentState.parentState;
+		}
+		return moves;		
+	}
+	
 	public ArrayList<SokobanState> constructPathToGoal()
 	{
 		ArrayList<SokobanState> steps = new ArrayList<SokobanState>();
