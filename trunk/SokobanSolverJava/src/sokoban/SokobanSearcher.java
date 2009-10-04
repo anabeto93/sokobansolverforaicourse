@@ -1,5 +1,8 @@
 package sokoban;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 
 public class SokobanSearcher extends AStarSearch
@@ -70,7 +73,8 @@ public class SokobanSearcher extends AStarSearch
 							manGoal.emptys.add((Square)jewel.clone());
 							manGoal.jewels.set(state.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
 							manGoal.emptys.remove(jewelMoves[i]);
-							manGoal.man = (Square)manMoves[i].clone();
+							manGoal.man = (Square)jewel.clone();
+							manGoal.manMoveLength = 1;
 							//Update the move string
 							manGoal.parentState = state;
 							switch(i)
@@ -91,12 +95,9 @@ public class SokobanSearcher extends AStarSearch
 							fringe.add(manGoal);
 						}
 						else //See if the man can get to the correct position
-						{
-							//SokobanState manStart = (SokobanState)state.clone();						
-							
+						{							
 							SokobanState manGoal = (SokobanState)state.clone();
 							manGoal.man = (Square)manMoves[i].clone();
-	
 							
 							if(manFinder.search(state, manGoal))
 							{
@@ -111,7 +112,9 @@ public class SokobanSearcher extends AStarSearch
 								
 								manDone.jewels.set(state.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
 								manDone.emptys.remove(jewelMoves[i]);
+								manDone.manMoveLength = manFinder.constructPathToGoal().size() + 1;
 								manDone.parentState = manGoal;
+								
 								//Add the last move where the goal is actually moved, Remember that we only move up to the correct position wit
 								//the finder, we do the last move 'manually'
 								switch(i)
@@ -185,9 +188,13 @@ public class SokobanSearcher extends AStarSearch
 	public void infoFunction()
 	{
 		runCounter += 1;
+		MemoryMXBean mem = ManagementFactory.getMemoryMXBean();
+		MemoryUsage memuse;
 		if(runCounter % 1000 == 0)
 		{ 
-			System.out.println("Run count: " + runCounter + "\tFringe size: " + this.openList.size());
+			Runtime.getRuntime().gc();
+			memuse = mem.getHeapMemoryUsage();
+			System.out.format("Runs so far: %d \tFringe size (open list): %d \tMemory used so far: %d MB \tMemory available: %d MB%n", runCounter, this.openList.size(), memuse.getUsed()/(1024 * 1024), memuse.getMax()/(1024 * 1024));
 		}
 		
 	}
