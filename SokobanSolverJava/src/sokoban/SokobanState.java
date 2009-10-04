@@ -7,7 +7,6 @@ public class SokobanState implements Cloneable
 	public ArrayList<Square> emptys = new ArrayList<Square>();
 	public ArrayList<Square> goals = new ArrayList<Square>();
 	public ArrayList<Square> jewels = new ArrayList<Square>();
-	public String movesActionsToState;
 	public char moveAction;
 	public SokobanState parentState = null;
 	public Square man;
