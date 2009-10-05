@@ -15,9 +15,9 @@ public class SokobanSearcher extends AStarSearch
 	public int evaluateState(SokobanState state, SokobanState stateGoal)
 	{
 		int score = 0;
-		boolean optimizeForMinmalManMoves = true;
+		boolean optimizeForMinimumManMoves = true;
 
-		if(optimizeForMinmalManMoves)
+		if(optimizeForMinimumManMoves)
 		{
 			//
 			//Optimize for minimal man moves!!!
