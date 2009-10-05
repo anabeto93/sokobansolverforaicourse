@@ -73,8 +73,9 @@ public class SokobanSolver {
 			for(SokobanState step : steps)
 			{
 				solution += step.manMovesInState;
-				System.out.println(step.moveAction);
+				System.out.println(step.manMovesInState);
 				mapParse.printMap(step);
+				System.out.println("");
 			}
 			System.out.println("Solution: " + solution);
 			System.out.println("Steps in solution: " + solution.length());
