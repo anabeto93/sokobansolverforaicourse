@@ -29,7 +29,6 @@ public class SokobanSearcher extends AStarSearch
 				numberOfMovesTakenToGetToState += searcher.manMovesInState.length();
 				searcher = searcher.parentState;
 			}
-			//length += searcher.movesSoFar.length();
 			return numberOfMovesTakenToGetToState;
 		}
 		else
