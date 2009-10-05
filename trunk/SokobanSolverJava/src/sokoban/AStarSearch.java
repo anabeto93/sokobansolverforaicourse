@@ -50,7 +50,7 @@ public abstract class AStarSearch
 		while(true)
 		{
 			infoFunction();
-			Collections.sort(openList, comparator);
+			//Collections.sort(openList, comparator);
 			SokobanState stateCurrent = openList.remove(0);
 			closedList.add(stateCurrent);
 			ArrayList<SokobanState> fringe = expandFringe(stateCurrent);
