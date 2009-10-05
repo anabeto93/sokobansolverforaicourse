@@ -15,8 +15,8 @@ public abstract class AStarSearch
 	public abstract boolean isGoalState(SokobanState state, SokobanState stateGoal);
 	public abstract void infoFunction();
 	
-	private SokobanState stateGoal;
-	private SokobanState stateInitial;
+	protected SokobanState stateGoal;
+	protected SokobanState stateInitial;
 	
 	private class ScoreComparator implements Comparator<SokobanState>
 	{
@@ -34,15 +34,18 @@ public abstract class AStarSearch
 		SokobanState currentState = stateGoal;
 		while(currentState != stateInitial)
 		{
-			if(currentState.moveAction != ' ' && !currentState.equals(currentState.parentState))
+			if(!currentState.equals(currentState.parentState))
 				steps.add(0, currentState);
 			currentState = currentState.parentState;
 		}
+		steps.add(0, currentState);
 		return steps;
 	}
 	
 	public boolean search(SokobanState stateInitial, SokobanState stateGoal)
 	{
+		this.stateGoal = stateGoal;
+		this.stateInitial = stateInitial;
 		openList = new ArrayList<SokobanState>();
 		closedList = new ArrayList<SokobanState>();
 		ScoreComparator comparator = new ScoreComparator();
@@ -50,7 +53,7 @@ public abstract class AStarSearch
 		while(true)
 		{
 			infoFunction();
-			//Collections.sort(openList, comparator);
+			Collections.sort(openList, comparator);
 			SokobanState stateCurrent = openList.remove(0);
 			closedList.add(stateCurrent);
 			ArrayList<SokobanState> fringe = expandFringe(stateCurrent);
@@ -61,8 +64,6 @@ public abstract class AStarSearch
 					if(isGoalState(stateFringe, stateGoal))
 					{
 						stateGoal.parentState = stateFringe;
-						this.stateGoal = stateGoal;
-						this.stateInitial = stateInitial;
 						return true;
 					}
 					stateFringe.score = evaluateState(stateFringe, stateGoal);

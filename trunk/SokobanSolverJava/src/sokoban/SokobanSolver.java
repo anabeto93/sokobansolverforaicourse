@@ -60,7 +60,6 @@ public class SokobanSolver {
 			if(searcher.search(initial, goal))
 			{
 				System.out.println("Solution found");
-				System.out.println("Steps in solution: " + searcher.constructPathToGoal().size());
 			}
 			else
 			{
@@ -73,11 +72,12 @@ public class SokobanSolver {
 			String solution = "";
 			for(SokobanState step : steps)
 			{
-				solution += step.moveAction;
+				solution += step.manMovesInState;
 				System.out.println(step.moveAction);
 				mapParse.printMap(step);
 			}
 			System.out.println("Solution: " + solution);
+			System.out.println("Steps in solution: " + solution.length());
 		}
 		catch (CloneNotSupportedException e)
 		{
