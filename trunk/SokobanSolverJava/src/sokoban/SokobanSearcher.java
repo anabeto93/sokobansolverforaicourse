@@ -22,15 +22,15 @@ public class SokobanSearcher extends AStarSearch
 			//
 			//Optimize for minimal man moves!!!
 			//
-			int length = 0;
+			int numberOfMovesTakenToGetToState = 0;
 			SokobanState searcher = state;
 			while(!searcher.equals(this.stateInitial))
 			{
-				length += searcher.manMovesInState.length();
+				numberOfMovesTakenToGetToState += searcher.manMovesInState.length();
 				searcher = searcher.parentState;
 			}
 			//length += searcher.movesSoFar.length();
-			return length;
+			return numberOfMovesTakenToGetToState;
 		}
 		else
 		{	
