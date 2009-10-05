@@ -20,7 +20,7 @@ public class SokobanSearcher extends AStarSearch
 		if(optimizeForMinimumManMoves)
 		{
 			//
-			//Optimize for minimal man moves!!!
+			//Optimize for minimum man moves!!!
 			//
 			int numberOfMovesTakenToGetToState = 0;
 			SokobanState searcher = state;
@@ -35,7 +35,7 @@ public class SokobanSearcher extends AStarSearch
 		else
 		{	
 			//
-			//Optimize for minimal jewel moves
+			//Optimize for minimum jewel moves
 			//
 			for(Square jewel : state.jewels)
 			{
