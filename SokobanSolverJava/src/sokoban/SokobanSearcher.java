@@ -10,29 +10,52 @@ public class SokobanSearcher extends AStarSearch
 
 	private ManPathfinder manFinder = new ManPathfinder();
 	private int runCounter = 0;
-	
+
 	@Override
 	public int evaluateState(SokobanState state, SokobanState stateGoal)
 	{
 		int score = 0;
-		for(Square jewel : state.jewels)
+		boolean optimizeForMinmalManMoves = true;
+
+		if(optimizeForMinmalManMoves)
 		{
-			int minimumDistanceToGoal = Integer.MAX_VALUE;
-			if(state.goals.contains(jewel))
+			//
+			//Optimize for minimal man moves!!!
+			//
+			int length = 0;
+			SokobanState searcher = state;
+			while(!searcher.equals(this.stateInitial))
 			{
-				continue;
+				length += searcher.manMovesInState.length();
+				searcher = searcher.parentState;
 			}
-			for(Square goal : state.goals)
-			{
-				int distance = Math.abs(jewel.x - goal.x) + Math.abs(jewel.y - goal.y);
-				if(distance < minimumDistanceToGoal)
-				{
-					minimumDistanceToGoal = distance;
-				}
-			}
-			score += minimumDistanceToGoal;
+			//length += searcher.movesSoFar.length();
+			return length;
 		}
-		return score + state.manMoveLength;
+		else
+		{	
+			//
+			//Optimize for minimal jewel moves
+			//
+			for(Square jewel : state.jewels)
+			{
+				int minimumDistanceToGoal = Integer.MAX_VALUE;
+				if(state.goals.contains(jewel))
+				{
+					continue;
+				}
+				for(Square goal : state.goals)
+				{
+					int distance = Math.abs(jewel.x - goal.x) + Math.abs(jewel.y - goal.y);
+					if(distance < minimumDistanceToGoal)
+					{
+						minimumDistanceToGoal = distance;
+					}
+				}
+				score += minimumDistanceToGoal;
+			}
+			return score;
+		}
 	}
 
 	@Override
@@ -74,22 +97,21 @@ public class SokobanSearcher extends AStarSearch
 							manGoal.jewels.set(state.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
 							manGoal.emptys.remove(jewelMoves[i]);
 							manGoal.man = (Square)jewel.clone();
-							manGoal.manMoveLength = 1;
 							//Update the move string
 							manGoal.parentState = state;
 							switch(i)
 							{
 							case 0:
-								manGoal.moveAction = 'U';
+								manGoal.manMovesInState = "U";
 								break;
 							case 1:
-								manGoal.moveAction = 'D';
+								manGoal.manMovesInState = "D";
 								break;
 							case 2:
-								manGoal.moveAction = 'L';
+								manGoal.manMovesInState = "L";
 								break;
 							case 3:
-								manGoal.moveAction = 'R';
+								manGoal.manMovesInState = "R";
 								break;
 							}
 							fringe.add(manGoal);
@@ -112,24 +134,24 @@ public class SokobanSearcher extends AStarSearch
 								
 								manDone.jewels.set(state.jewels.indexOf(jewel), (Square)jewelMoves[i].clone());
 								manDone.emptys.remove(jewelMoves[i]);
-								manDone.manMoveLength = manFinder.constructPathToGoal().size() + 1;
-								manDone.parentState = manGoal;
+								manDone.manMovesInState = manFinder.getMoves();
+								manDone.parentState = state;
 								
 								//Add the last move where the goal is actually moved, Remember that we only move up to the correct position wit
 								//the finder, we do the last move 'manually'
 								switch(i)
 								{
 								case 0:
-									manDone.moveAction = 'U';
+									manDone.manMovesInState += 'U';
 									break;
 								case 1:
-									manDone.moveAction = 'D';
+									manDone.manMovesInState += 'D';
 									break;
 								case 2:
-									manDone.moveAction = 'L';
+									manDone.manMovesInState += 'L';
 									break;
 								case 3:
-									manDone.moveAction = 'R';
+									manDone.manMovesInState += 'R';
 									break;
 								}
 								fringe.add(manDone);

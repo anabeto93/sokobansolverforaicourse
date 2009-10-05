@@ -75,5 +75,21 @@ public class ManPathfinder extends AStarSearch
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public String getMoves()
+	{
+		StringBuilder moves = new StringBuilder();
+		SokobanState searcher = this.stateGoal;
+		while(!searcher.equals(this.stateInitial))
+		{
+			if(searcher.moveAction != ' ')
+				moves.append(searcher.moveAction);
+			searcher = searcher.parentState;
+		}
+		if(searcher.moveAction != ' ')
+			moves.append(searcher.moveAction);
+		moves.reverse();
+		return moves.toString();
+	}
 
 }

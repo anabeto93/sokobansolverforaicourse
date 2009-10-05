@@ -10,7 +10,7 @@ public class SokobanState implements Cloneable
 	public char moveAction = ' ';
 	public SokobanState parentState = null;
 	public Square man;
-	public int manMoveLength = 0;
+	public String manMovesInState = "";
 	public int score = Integer.MAX_VALUE;
 	
 	@Override 
@@ -24,7 +24,7 @@ public class SokobanState implements Cloneable
 		stateClone.man = this.man;
 		stateClone.score = this.score;
 		stateClone.parentState = this.parentState;
-		stateClone.manMoveLength = this.manMoveLength;
+		stateClone.manMovesInState = this.manMovesInState;
 		return stateClone;
 	}
 	
