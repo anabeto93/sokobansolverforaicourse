@@ -22,19 +22,19 @@ public class ManPathfinder extends AStarSearch
 			
 			//Up
 			moves[0] = new Square(state.man.x, state.man.y - 1);
-			action[0] = 'u';
+			action[0] = upDirection;
 			
 			//Down
 			moves[1] = new Square(state.man.x, state.man.y + 1);
-			action[1] = 'd';
+			action[1] = downDirection;
 			
 			//Left
 			moves[2] = new Square(state.man.x - 1, state.man.y);
-			action[2] = 'l';
+			action[2] = leftDirection;
 			
 			//Right
 			moves[3] = new Square(state.man.x + 1, state.man.y);			
-			action[3] = 'r';
+			action[3] = rightDirection;
 			
 			for(int i = 0; i < 4; i++)
 			{
