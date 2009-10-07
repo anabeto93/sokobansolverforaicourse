@@ -18,6 +18,11 @@ public abstract class AStarSearch
 	protected SokobanState stateGoal;
 	protected SokobanState stateInitial;
 	
+	protected char upDirection = 'u';
+	protected char downDirection = 'd';
+	protected char leftDirection = 'l';
+	protected char rightDirection = 'r';
+	
 	private class ScoreComparator implements Comparator<SokobanState>
 	{
 		@Override

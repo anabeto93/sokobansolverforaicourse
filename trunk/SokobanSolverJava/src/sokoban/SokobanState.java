@@ -54,13 +54,13 @@ public class SokobanState implements Cloneable
 			return false;
 		
 		SokobanState that = (SokobanState)other;
-		if(this.jewels.containsAll(that.jewels))
-		{
-			if(this.man.equals(that.man))
-			{
-				return true;
-			}
-		}
+        if(this.jewels.containsAll(that.jewels))
+        {
+                if(this.man.equals(that.man))
+                {
+                        return true;
+                }
+        }
 		return false;
 	}
 }

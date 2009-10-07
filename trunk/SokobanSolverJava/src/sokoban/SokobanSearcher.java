@@ -101,16 +101,16 @@ public class SokobanSearcher extends AStarSearch
 							switch(i)
 							{
 							case 0:
-								manGoal.manMovesInState = "U";
+								manGoal.manMovesInState = Character.toString(upDirection).toUpperCase();
 								break;
 							case 1:
-								manGoal.manMovesInState = "D";
+								manGoal.manMovesInState = Character.toString(downDirection).toUpperCase();
 								break;
 							case 2:
-								manGoal.manMovesInState = "L";
+								manGoal.manMovesInState = Character.toString(leftDirection).toUpperCase();
 								break;
 							case 3:
-								manGoal.manMovesInState = "R";
+								manGoal.manMovesInState = Character.toString(rightDirection).toUpperCase();
 								break;
 							}
 							fringe.add(manGoal);
@@ -141,16 +141,16 @@ public class SokobanSearcher extends AStarSearch
 								switch(i)
 								{
 								case 0:
-									manDone.manMovesInState += 'U';
+									manDone.manMovesInState += Character.toString(upDirection).toUpperCase();
 									break;
 								case 1:
-									manDone.manMovesInState += 'D';
+									manDone.manMovesInState += Character.toString(downDirection).toUpperCase();
 									break;
 								case 2:
-									manDone.manMovesInState += 'L';
+									manDone.manMovesInState += Character.toString(leftDirection).toUpperCase();
 									break;
 								case 3:
-									manDone.manMovesInState += 'R';
+									manDone.manMovesInState += Character.toString(rightDirection).toUpperCase();
 									break;
 								}
 								fringe.add(manDone);

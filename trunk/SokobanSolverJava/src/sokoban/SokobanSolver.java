@@ -15,7 +15,8 @@ public class SokobanSolver {
 	public static void main2()
 	{
 		MapParser mapParse = new MapParser();
-		SokobanState initial = mapParse.getInitialSokobanState("./rsc/map2");
+		//SokobanState initial = mapParse.getInitialSokobanState("/filedisc/Workspace/Eclipse_linux_64BIT/SokobanSolverJava/rsc/map2");
+        SokobanState initial = mapParse.getInitialSokobanState("./rsc/map2");
 		ManPathfinder finder = new ManPathfinder();
 		try
 		{
@@ -38,7 +39,8 @@ public class SokobanSolver {
 	public static void main1() 
 	{
 		MapParser mapParse = new MapParser();
-		SokobanState initial = mapParse.getInitialSokobanState("./rsc/map2");
+		//SokobanState initial = mapParse.getInitialSokobanState("/filedisc/Workspace/Eclipse_linux_64BIT/SokobanSolverJava/rsc/map2");
+        SokobanState initial = mapParse.getInitialSokobanState("./rsc/map2");
 		
 		try
 		{
