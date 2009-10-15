@@ -1,5 +1,5 @@
 % article document class appropriate for small (<100 pages) documents
-\documentclass[draft, english, a4paper, 10pt]{article}
+\documentclass[draft, english, a4paper]{article}
 
 % Packages provide additional functionality
 %\usepackage{url}
@@ -9,6 +9,7 @@
 \graphicspath{{eps/}{images/}} %Set images/figures search path (relative to top latex file)
 \usepackage[utf8]{inputenc}
 \usepackage[left=3cm,top=4cm,right=3cm]{geometry}
+\usepackage{listings}
 \usepackage[dvips,
             colorlinks=false,
             pdfduplex=DuplexFlipLongEdge,
@@ -177,10 +178,11 @@
 	    \fixme{Let us write this when the vehicle is done}
 \section{Planner description}
     \input{sokoban_problem_discussion.tex}
-	\subsection{Discussion of path finding algorithms} %Mikael
-		\subsubsection{Selection of algorithm}
+	\subsection{Discussion of search algorithms} %Mikael
+		\input{discussion_of_search_algorithms}
 		\input{map_representation.tex} %Mikael
-	\subsection{Algorithm design}
+	\subsection{Implementation}
+	\input{implementation_details.tex}
 	\subsection{Performance evaluation}
 	\subsection{conclusion}
 \section{Conclusion}
