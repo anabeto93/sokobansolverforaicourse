@@ -15,4 +15,5 @@ XXX..X..X...X\\
 \\\\ 
 where 'X' represents 'Wall' squares, '.' represent 'Emtpy' squares, 'J' represents 'Jewel' squares, 'G' represents 'goal' squares and finally 'M' represents the 'Man' square. 
 
-This map representation will be converted directly into a multidimensional array, in order to use the map in graph traversal by the chosen search algorithm. The multidimensional array representation is preferable, because a particular squares x and y coordinate translates directly to the corresponding row and column of the multidimensional array, which in turn enables the algorithm to quickly look up possible routes.
+This map representation will be converted directly into a data structure containing x y coordinates (lists), in order to use the map in graph traversal by the chosen search algorithm. Each state will contain one lists representing the coordinates of the empty squares, one list containing the coordinates of the jewel, one list with the goals and finally the coordinate of the man. In this way a move can quickly be investigated to determine its legality, and two states can be compared for equality.
+An alternative representation could be a multidimensional array, directly translating the map into an array of characters. This would however most likely require more programmatical effort in regards of state comparison and move legality checking.

@@ -24,31 +24,27 @@ As stated previously the purpose of the game is for the player to push 'Jewel' s
  
 \subsubsection{Challenges faced when solving Sokoban algorithmically}
 Given the fact that the player can on average move up, down, left and right, we see that the problem presents a so called branching factor of 4. If an algorithm is able to solve the puzzle in 100 moves, the complexity becomes 4$^{100}$ . 
-This enormous complexity, illustrates the need for some sort of heuristics, if the problem is to be solved in an acceptable time frame.
-Deadlocks are one of the main challenges faced when trying to solve the Sokoban puzzle. A deadlock is best described as a situation where a jewel is pushed into a position that eliminates the possibility of solving the puzzle, for instance pushing a jewel into a corner. Most current known algorithms that attempt to solve Sokoban due a large amount of processing to try and avoid deadlocks, by using for instance table lookups. One way of solving sokoban however, that can almost avoid any need for deadlock detection, is the so called 'ReversedSolving-algorithm'\cite{franktakes}
+This enormous complexity, illustrates the need for some sort of heuristics or pruning of the search tree, if the problem is to be solved in an acceptable time frame.
+Deadlocks are one of the main challenges faced when trying to solve the Sokoban puzzle. A deadlock is best described as a situation where a jewel is pushed into a position that eliminates the possibility of solving the puzzle, for instance pushing a jewel into a corner. 
 
-\subsubsection{The Reversed-Solving algorithm}
-The reversed solving algorithm is based on the idea that all jewels are placed on the goal, and then pulled by the 'Man'/player into the original positions. When the solution has been found, the same path can then be used to push the jewels on to the goals.
+\subsection{Algorithmic approach}
+The general approach taken to solve the sokoban problem, is creating a search tree where every node in the tree is a state of the game. The goal is then to traverse the tree to find the state where all of the coordinates of the jewels match the coordinates of all the goals.\\
+The general algorithmic search can described as:
 
-The fact that the 'Man' now pulls jewels instead of pushing them, makes it almost impossible to place jewels in deadlock positions (you can for instance not pull a jewel into a corner, or pull next to another jewel in a way that would make it impossible to pull it further).
+\begin{lstlisting}[language=Ruby, frame=single, basicstyle=\small, caption={Deadlock detection pseudo code}, label={code:sokoalgo}]
+if not problem solved:
+	get next state in search tree
+	if state not goal state:
+		for each jewel in state do:
+			for every direction in which jewel can move one square do:
+				if resulting state would be valid and resulting state not duplicate of a previous state:
+					if robot can get to the position to push the jewel in the desired direction:
+						create new state				
+						move jewel to new position
+						move robot to previous jewel position
+						calculate state score
+						add state to search tree	
+\end{lstlisting}
 
-The algorithm contains the following steps as described in \cite{franktakes}:
-
-\begin{enumerate}
-\item Load puzzle, and make a copy to keep track of original position of jewels
-\item Place all jewels on the goals
-\item As long as the jewels are not placed at the original positions, and the 'Man' is not able to reach his original position, do:
-\subitem While condition X is not satisfied:
-\subsubitem Pull a jewel to a position where it has not been before
-\subitem Change to another jewel, either in random or lexicographical order
-\end{enumerate}
-
-\paragraph{The X condition}
-The X condition in the above algorithm describes that condition required for the algorithm to switch from one jewel to the next. The following 3 conditions can be used, which all affect the efficiency of the algorithm depending on the puzzle being solved:
-
-\begin{itemize}
-\item X1: After N steps. N is an integer.
-\item X2: When a jewel is at its final position
-\item X3: When a jewel is N steps away from a final position
-\end{itemize}
-
+As can be seen from the pseudo code, the problem solving can logically be divided into two separate subproblems, the first one being the movement of the jewels, henceforth known as the jewel problem, and the second being the path finding from the robot to the jewel that has to be moved, henceforth known as the path finding problem. 
+The search approach best suited for the solving of these two distinct areas might not be the same, and therefore each subproblem is considered separately. 
