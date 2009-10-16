@@ -9,7 +9,7 @@ public class SokobanSearcher extends AStarSearch
 {
 
     private ManPathfinder manFinder = new ManPathfinder();
-    private int runCounter = 0;
+    public int runCounter = 0;
 
     @Override
     public int evaluateState(SokobanState state, SokobanState stateGoal)
