@@ -27,7 +27,7 @@ Given the fact that the player can on average move up, down, left and right, we 
 This enormous complexity, illustrates the need for some sort of heuristics or pruning of the search tree, if the problem is to be solved in an acceptable time frame.
 Deadlocks are one of the main challenges faced when trying to solve the Sokoban puzzle. A deadlock is best described as a situation where a jewel is pushed into a position that eliminates the possibility of solving the puzzle, for instance pushing a jewel into a corner. 
 
-\subsection{Algorithmic approach}
+\subsubsection{Algorithmic approach}
 The general approach taken to solve the sokoban problem, is creating a search tree where every node in the tree is a state of the game. The goal is then to traverse the tree to find the state where all of the coordinates of the jewels match the coordinates of all the goals.\\
 The general algorithmic search can described as:
 

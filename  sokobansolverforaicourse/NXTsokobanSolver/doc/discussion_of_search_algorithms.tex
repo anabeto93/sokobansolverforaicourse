@@ -1,21 +1,21 @@
-\subsection*{The following algorithms have been considered to solve the jewel problem}
+\subsubsection*{The following algorithms have been considered to solve the jewel problem}
 As mentioned the two things that can potentially hope to minimize the search time needed to solve a sokoban problem, namely a 'good' heuristic search and search tree pruning. The heuristic function is concerned with the 'get next state in search tree' part of the algorithm, and pruning is concerned with the 'is state valid' part.
 
 \subsubsection*{A*}
-A* was one of the algorithms first considered using for the problem, because it is both optimal, complete and fast if a good heuristic function is used.
-It has however proven fairly difficult to find a 'good' admissible heuristic for the jewel problem. One of the only possibilities that have come to mind is the sum of each jewels manhatten distance to it's closest goal. This heuristic would be admissible, since the the closest distance from a jewel to a goal would naturally be the minimum amount of moves needed to move the jewel in order to solve the problem. This heuristic can unfortunately not be characterized as good, since the sum of smallest distances between jewels and goals, is by no means an estimate of the number of moves left to solve the problem, due to the intrinsic complexity of most sokoban problems (jewels getting in the way of other jewels, jewels being blocked by walls etc.). In other words, a good A* heuristic should guide the search down the branch of the search tree most likely to contain an acceptable solution, thereby minimizing the the nodes/states that would have to be traversed in order to get to a solution. The considered heuristic would not be able to do so, thereby causing the implementation to potentially lose its optimality, which is a big deal since the competition factor is time. \fixme{This loss of optimality is probably wrong}
+This was the first algorithm considered using for the problem, because it is both optimal, complete and fast if a good heuristic function is used.
+It has however proven fairly difficult to find a 'good' admissible heuristic for the jewel problem. One of the only possibilities that have come to mind is the sum of each jewels manhatten distance to it's closest goal. This heuristic would be admissible, since the the closest distance from a jewel to a goal would naturally be the minimum amount of moves needed to move the jewel in order to solve the problem. It is our assessment that this heuristic unfortunately can not be characterized as good, since the sum of smallest distances between jewels and goals, is by no means an estimate of the number of moves left to solve the problem, due to the intrinsic complexity of most sokoban problems (jewels getting in the way of other jewels, jewels being blocked by walls etc.). In other words, a good A* heuristic should guide the search down the branch of the search tree most likely to contain an acceptable solution, thereby minimizing the the nodes/states that would have to be traversed in order to get to a solution. The considered heuristic would not be able to do so, thereby causing the implementation to potentially lose its optimality, which is a big deal since the competition factor is time. \fixme{This loss of optimality is probably wrong}
 The cost that would be used in this implementation, would be the number of moves the robot/man would have to take to move the jewel to the desired position.
 
-\subsection*{Greedy search}
+\subsubsection*{Greedy search}
 By disregarding the Heuristic function from the A* search, and instead using the cost of robot movements as the heuristic, we would in effect get a greedy search. We would use a so called closed list, to avoid loops, thereby attaining completeness. The downside of this algorithm however is that it is not optimal, which as mentioned is an important factor in this case.
 
-\subsection*{Breadth first search}
+\subsubsection*{Breadth first search}
 The breadth first search algorithm is inherently slow for complex problems, but is however optimal in so called unit-step cases (the cost from one state to the next is always the same), which speaks greatly in favour of this algorithm in this case. However for this to work it is important to remember that the unit-step requirements necessitates an implementation where each robot movement spawns a new state, as opposed to just spawning a new state for each jewel movement which will, among other things, increase the amount of memory needed by the algorithm. The use of this algorithm therefore requires that the two subproblems be solved as one.
 
-\subsection*{Uniform cost search}
+\subsubsection*{Uniform cost search}
 A variation on the breadth first search and greedy search exists, where the next node visited is the one with the least total cost from the root node, as opposed to the greedy search where the next state visited is the one with the least cost from the current node, which was the cause of the non optimality of the greedy search. This is therefore both a complete and optimal algorithm in terms of minimum robot movements, when using the robot movements as cost. Furthermore it does not require, as the breadth first search, that each robot movement spawn a new node in the tree, but can instead use each jewel movement to spawn a node.
 
-\subsection*{Search tree pruning}
+\subsubsection*{Search tree pruning}
 Since a good heuristic function has not been found for the search algorithm, the time complexity of the solver will presumably be high, unless the search tree can be pruned significantly. Fortunately the sokoban problem is one where a large amount of pruning is possible in terms of deadlock detection. 
 
 \begin{figure}[ht]
@@ -58,7 +58,7 @@ For each jewel do:
 	return true
 \end{lstlisting}
 
-\subsection*{The following algorithms have been considered to solve the path finding problem}
+\subsubsection*{The following algorithms have been considered to solve the path finding problem}
 \subsubsection*{A*}
 This algorithm is very often used as path finding algorithms in games, because good heuristic functions are relatively easy to find when confronted with such problems. Often the manhatten distance to the goal is sufficient enough to give very fast searches compared to depth -or breadth first. Therefore we do not consider any other searches for the path finding problem.
 
