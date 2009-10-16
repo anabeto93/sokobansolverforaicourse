@@ -1,0 +1,19 @@
+For each search algorithm, three consecutive runs have been performed with each search algorithm, and the data from the best run chosen.\\
+
+\begin{table}[h!]
+	\centering
+	\begin{tabular}{| l | c | c | c | c | }
+		\hline
+			Search algorithm	& States traversed & Memory used [MB] & Robot moves & Time taken [s]\\ \hline
+	    	Uniform Cost & 18968 			& 39 		 & 142 	& 202\\\hline
+		    Breadth first (Non unit-step)	& 19761 			& 40 		 & 162 	& 218\\\hline
+		    A*		& 18788 			& 39 		 & 142 	& 189 \\\hline
+	    	Greedy 		& 18215 			& 48 		 & 212 	& 179 \\
+		\hline
+	\end{tabular}
+	\label{tbl:searchresults}
+	\caption{Results from the different search algorithms.}
+\end{table}
+
+\subsection{conclusion}
+As can bee seen from the Uniform Cost search in table \ref{tbl:searchresults}, the optimal solution contains 142 solutions (102 if the solver did not take into account the number of moves that the robot must perform in reality). As predicted the breadth first and greedy searches do not find the optimal solution, and would therefore not be applicable to use for this particular project, even though greedy search outperforms the other searches in terms of speed. A somewhat surprising result of these experiments is the A* search, which outperforms the Uniform Cost Search in number of states traversed and time taken, and still finds the optimal solution, which was somewhat unexpected qua the reasoning presented when considering which algorithm to use. It can therefore be concluded that the sum of the manhatten distances between the each jewel and its closest goal, is a heuristic that will yield an optimized search.
