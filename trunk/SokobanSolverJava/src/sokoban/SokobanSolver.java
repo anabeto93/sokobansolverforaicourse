@@ -111,6 +111,7 @@ public class SokobanSolver {
 			}
 			System.out.println("Solution: " + solution);
 			System.out.println("Steps in solution: " + solution.length());
+			System.out.println("States traversed: " + searcher.runCounter);
 		}
 		catch (CloneNotSupportedException e)
 		{
