@@ -1,4 +1,13 @@
 \subsection{Choice of programming language}
 The first language considered for implementing the solver, was Python. Python however turned out to be very slow for this type of problem, in particular when using a debugger. We therefore turned to java, because java still provides a significant programming abstraction compared to C or C++, allowing us to focus more on the algorithms than on memory allocation and deallocation. Furthermore java has a standard library that is more mature and easier to use than the standard template library of C++. 
 
+\subsection{Robot movements in real life}
+When the lego robot moves to a jewel (A can of tomato pure) in real life, the square movements do not match the actual map representation. This is mostly due to the fact that the can of pure does not fill an entire square in real life, and neither does the robot. The practical consequences of this is:
+\begin{itemize}
+\item When the man/robot gets to a jewel in the map, it has in reality to move an extra square to get to the can of pure.
+\item When the robot is moving a can, and has to change to another can immediately, it has to back up one square first.
+\item When the robot has finished moving a can, and has to perform its next move without the can, it has to move back one square first.
+\end{itemize}
+ 
+These 'extra movements' that have to be taken depending on whether or not previous and next moves of the robot involves a jewel,  will be taken into account when implementing the planner (specifically where the number of movements are used to calculate the score of the state), so that that it will be possible to get a solution that contains the minimum number of moves that the robot has to perform in real life, as opposed to the minimum number of steps that have to be performed when adhering solely to the rules of sokoban and the textual representation of the map.
 
