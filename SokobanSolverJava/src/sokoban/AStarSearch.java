@@ -8,21 +8,25 @@ public abstract class AStarSearch
 {
 	protected ArrayList<SokobanState> openList;
 	protected ArrayList<SokobanState> closedList;
-	
+
 	public abstract ArrayList<SokobanState> expandFringe(SokobanState state);
+
 	public abstract int evaluateState(SokobanState state, SokobanState stateGoal);
+
 	public abstract boolean isValid(SokobanState state);
+
 	public abstract boolean isGoalState(SokobanState state, SokobanState stateGoal);
+
 	public abstract void infoFunction();
-	
+
 	protected SokobanState stateGoal;
 	protected SokobanState stateInitial;
-	
+
 	protected char upDirection = 'u';
 	protected char downDirection = 'd';
 	protected char leftDirection = 'l';
 	protected char rightDirection = 'r';
-	
+
 	private class ScoreComparator implements Comparator<SokobanState>
 	{
 		@Override
@@ -30,23 +34,22 @@ public abstract class AStarSearch
 		{
 			return o1.score - o2.score;
 		}
-		
+
 	}
-	
+
 	public ArrayList<SokobanState> constructPathToGoal()
 	{
 		ArrayList<SokobanState> steps = new ArrayList<SokobanState>();
 		SokobanState currentState = stateGoal;
-		while(currentState != stateInitial)
+		while (currentState != stateInitial)
 		{
-			if(!currentState.equals(currentState.parentState))
-				steps.add(0, currentState);
+			if (!currentState.equals(currentState.parentState)) steps.add(0, currentState);
 			currentState = currentState.parentState;
 		}
 		steps.add(0, currentState);
 		return steps;
 	}
-	
+
 	public boolean search(SokobanState stateInitial, SokobanState stateGoal)
 	{
 		this.stateGoal = stateGoal;
@@ -55,41 +58,41 @@ public abstract class AStarSearch
 		closedList = new ArrayList<SokobanState>();
 		ScoreComparator comparator = new ScoreComparator();
 		openList.add(stateInitial);
-		while(true)
+		while (true)
 		{
 			infoFunction();
 			Collections.sort(openList, comparator);
 			SokobanState stateCurrent = openList.remove(0);
 			closedList.add(stateCurrent);
 			ArrayList<SokobanState> fringe = expandFringe(stateCurrent);
-			for(SokobanState stateFringe : fringe)
+			for (SokobanState stateFringe : fringe)
 			{
-				if(isValid(stateFringe))
+				if (isValid(stateFringe))
 				{
-					if(isGoalState(stateFringe, stateGoal))
+					if (isGoalState(stateFringe, stateGoal))
 					{
 						stateGoal.parentState = stateFringe;
 						return true;
 					}
 					stateFringe.score = evaluateState(stateFringe, stateGoal);
-					if(openList.contains(stateFringe))
+					if (openList.contains(stateFringe))
 					{
 						SokobanState stateOld = openList.get(openList.indexOf(stateFringe));
-						if(stateFringe.score < stateOld.score)
+						if (stateFringe.score < stateOld.score)
 						{
 							openList.set(openList.indexOf(stateOld), stateFringe);
 						}
 					}
 					else
 					{
-						if(!closedList.contains(stateFringe))
+						if (!closedList.contains(stateFringe))
 						{
 							openList.add(stateFringe);
 						}
 					}
 				}
 			}
-			if(openList.size() == 0)
+			if (openList.size() == 0)
 			{
 				return false;
 			}

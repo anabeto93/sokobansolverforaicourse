@@ -12,6 +12,36 @@ public class SokobanSolver {
 		main1();
 	}
 	
+	public static void main3()
+	{
+		MapParser mapParse = new MapParser();
+		//SokobanState initial = mapParse.getInitialSokobanState("/filedisc/Workspace/Eclipse_linux_64BIT/SokobanSolverJava/rsc/map2");
+        SokobanState initial = mapParse.getInitialSokobanState("./rsc/map2");
+		ManPathfinder finder = new ManPathfinder();	
+		try
+		{
+			int x = 2;
+			int y = 2;
+			SokobanState goal = (SokobanState)initial.clone();
+			goal.emptys.add((Square)goal.man.clone());
+			goal.emptys.remove(new Square(x, y));
+			goal.man = new Square(x, y);
+			long startTime = System.currentTimeMillis();
+			for(int i = 0; i < 10000; i++)
+			{
+				if(finder.search(initial, goal))
+					System.out.println("Hey");
+			}
+			long endTime = System.currentTimeMillis();
+			System.out.println("Time taken: " + (endTime - startTime));
+		}
+		catch (CloneNotSupportedException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main2()
 	{
 		MapParser mapParse = new MapParser();
