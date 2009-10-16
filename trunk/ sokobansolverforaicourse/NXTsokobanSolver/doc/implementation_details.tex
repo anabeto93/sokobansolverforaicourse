@@ -1,7 +1,27 @@
-\subsection{Choice of programming language}
+\subsubsection{Choice of programming language}
 The first language considered for implementing the solver, was Python. Python however turned out to be very slow for this type of problem, in particular when using a debugger. We therefore turned to java, because java still provides a significant programming abstraction compared to C or C++, allowing us to focus more on the algorithms than on memory allocation and deallocation. Furthermore java has a standard library that is more mature and easier to use than the standard template library of C++. 
 
-\subsection{Robot movements in real life}
+\subsubsection{Map representation}
+The particular Sokoban puzzle that must be solved by the robot, is handed out beforehand in a textual format. An example of this textual format is:
+\\\\
+XXXXX\\  
+X......XXXXX\\ 
+X..J..J..J...X\\  
+XXX..X..X...X\\   
+\hspace*{6 mm}X..X.....X\\  
+\hspace*{3 mm}XX..XXX..XX\\        
+\hspace*{3 mm}X..GGG..G..X\\ 
+\hspace*{3 mm}X....MG..J..X\\  
+\hspace*{3 mm}X..XXX..XXX\\     
+\hspace*{3 mm}X............X\\
+\hspace*{3 mm}XXXXXXX  
+\\\\ 
+where 'X' represents 'Wall' squares, '.' represent 'Emtpy' squares, 'J' represents 'Jewel' squares, 'G' represents 'goal' squares and finally 'M' represents the 'Man' square. 
+
+This map representation will be converted directly into a data structure containing x y coordinates (lists), in order to use the map in graph traversal by the chosen search algorithm. Each state will contain one lists representing the coordinates of the empty squares, one list containing the coordinates of the jewel, one list with the goals and finally the coordinate of the man. In this way a move can quickly be investigated to determine its legality, and two states can be compared for equality.
+An alternative representation could be a multidimensional array, directly translating the map into an array of characters. This would however most likely require more programmatical effort in regards of state comparison and move legality checking.
+
+\subsubsection{Robot movements in real life}
 When the lego robot moves to a jewel (A can of tomato pure) in real life, the square movements do not match the actual map representation. This is mostly due to the fact that the can of pure does not fill an entire square in real life, and neither does the robot. The practical consequences of this is:
 \begin{itemize}
 \item When the man/robot gets to a jewel in the map, it has in reality to move an extra square to get to the can of pure.
