@@ -31,19 +31,19 @@ Deadlocks are one of the main challenges faced when trying to solve the Sokoban 
 The general approach taken to solve the sokoban problem, is creating a search tree where every node in the tree is a state of the game. The goal is then to traverse the tree to find the state where all of the coordinates of the jewels match the coordinates of all the goals.\\
 The general algorithmic search can described as:
 
-\begin{lstlisting}[language=Ruby, frame=single, basicstyle=\small, caption={Deadlock detection pseudo code}, label={code:sokoalgo}]
+\begin{lstlisting}[language=Ruby, frame=single, basicstyle=\tiny, caption={Deadlock detection pseudo code}, label={code:sokoalgo}]
 if not problem solved:
 	get next state in search tree
 	if state not goal state:
-		for each jewel in state do:
-			for every direction in which jewel can move one square do:
-				if resulting state would be valid and resulting state not duplicate of a previous state:
-					if robot can get to the position to push the jewel in the desired direction:
-						create new state				
-						move jewel to new position
-						move robot to previous jewel position
-						calculate state score
-						add state to search tree	
+	  for each jewel in state do:
+	    for every direction in which jewel can move one square do:
+		  if resulting state would be valid and resulting state not duplicate of a previous state:
+			if robot can get to the position to push the jewel in the desired direction:
+			  create new state				
+			  move jewel to new position
+			  move robot to previous jewel position
+			  calculate state score
+			  add state to search tree	
 \end{lstlisting}
 
 As can be seen from the pseudo code, the problem solving can logically be divided into two separate subproblems, the first one being the movement of the jewels, henceforth known as the jewel problem, and the second being the path finding from the robot to the jewel that has to be moved, henceforth known as the path finding problem. 
