@@ -10,7 +10,7 @@ The cost that would be used in this implementation, would be the number of moves
 By disregarding the Heuristic function from the A* search, and instead using the cost of robot movements as the heuristic, we would in effect get a greedy search. We would use a so called closed list, to avoid loops, thereby attaining completeness. The downside of this algorithm however is that it is not optimal, which as mentioned is an important factor in this case.
 
 \subsubsection*{Breadth first search}
-The breadth first search algorithm is inherently slow for complex problems, but is however optimal in so called unit-step cases (the cost from one state to the next is always the same), which speaks greatly in favour of this algorithm in this case. However for this to work it is important to remember that the unit-step requirements necessitates an implementation where each robot movement spawns a new state, as opposed to just spawning a new state for each jewel movement which will, among other things, increase the amount of memory needed by the algorithm. The use of this algorithm therefore requires that the two subproblems be solved as one.
+The breadth first search algorithm is inherently slow for complex problems, but is however optimal in so called unit-step cases (the cost from one state to the next is always the same), which speaks greatly in favour of this algorithm in this case. However for this to work it is important to remember that the unit-step requirements necessitates an implementation where each robot movement spawns a new state, as opposed to just spawning a new state for each jewel movement, so that the depth of the solution in the tree will correspond with the number of movements performed by the robot. The use of this algorithm therefore requires that the two subproblems be solved as one. This will, among other things, increase the amount of memory needed by the algorithm. 
 
 \subsubsection*{Uniform cost search}
 A variation on the breadth first search and greedy search exists, where the next node visited is the one with the least total cost from the root node, as opposed to the greedy search where the next state visited is the one with the least cost from the current node, which was the cause of the non optimality of the greedy search. This is therefore both a complete and optimal algorithm in terms of minimum robot movements, when using the robot movements as cost. Furthermore it does not require, as the breadth first search, that the sokoban problem not be solved as two subproblems.
@@ -31,31 +31,31 @@ The following deadlock detection algorithm is devised, where return true symboli
 
 \begin{lstlisting}[language=Ruby, frame=single, basicstyle=\small, caption={Deadlock detection pseudo code}, label={code:deaddetect}]
 For each jewel do:
-	if jewel in corner:
-		return true
-	if jewel against vertical wall:
-		for each square above jewel:
-			if square is goal:
-				return false
-			if square on the obstructed side of jewel is empty or goal or jewel:
-				return false
-		for each square below jewel:
-			if square is goal:
-				return false
-			if square on the obstructed side of jewel is empty or goal or jewel:
-				return false
-	if jewel against horizontal wall:
-		for each square to the right of jewel:
-			if square is goal:
-				return false
-			if square on the obstructed side of jewel is empty or goal or jewel:
-				return false
-		for each square to the left of jewel:
-			if square is goal:
-				return false
-			if square on the obstructed side of jewel is empty or goal or jewel:
-				return false
-	return true
+  if jewel in corner:
+    return true
+  if jewel against vertical wall:
+    for each square above jewel:
+      if square is goal:
+        return false
+      if square on the obstructed side of jewel is empty or goal or jewel:
+        return false
+    for each square below jewel:
+      if square is goal:
+        return false
+      if square on the obstructed side of jewel is empty or goal or jewel:
+        return false
+  if jewel against horizontal wall:
+    for each square to the right of jewel:
+      if square is goal:
+        return false
+      if square on the obstructed side of jewel is empty or goal or jewel:
+        return false
+    for each square to the left of jewel:
+      if square is goal:
+        return false
+      if square on the obstructed side of jewel is empty or goal or jewel:
+        return false
+  return true
 \end{lstlisting}
 
 \subsubsection*{The following algorithms have been considered to solve the path finding problem}
