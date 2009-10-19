@@ -37,14 +37,15 @@ if not problem solved:
 	if state not goal state:
 	  for each jewel in state do:
 	    for every direction in which jewel can move one square do:
-		  if resulting state would be valid and resulting state not duplicate of a previous state:
-			if robot can get to the position to push the jewel in the desired direction:
-			  create new state				
-			  move jewel to new position
-			  move robot to previous jewel position
-			  calculate state score
-			  add state to search tree	
+		  if resulting state is valid and not duplicate of a previous state:
+		   if robot can get to the position to push the jewel in the desired direction:
+             create new state				
+			 move jewel to new position
+			 move robot to previous jewel position
+			 calculate state score
+			 add state to search tree	
 \end{lstlisting}
 
 As can be seen from the pseudo code, the problem solving can logically be divided into two separate subproblems, the first one being the movement of the jewels, henceforth known as the jewel problem, and the second being the path finding from the robot to the jewel that has to be moved, henceforth known as the path finding problem. 
 The search approach best suited for the solving of these two distinct areas might not be the same, and therefore each subproblem is considered separately, and the solution implemented will treat the subproblems as two seperate search trees. 
+It is important to note that the optimal solutions is wanted in terms of minimum number of robot/man movements. This is as mentioned due to the fact that the competition is on time, and the assumption therefore is that the less squares that the robot has to traverse, the less time it will take to solve the puzzle.
