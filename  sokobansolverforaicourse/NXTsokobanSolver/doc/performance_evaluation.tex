@@ -11,10 +11,9 @@ For each search algorithm, three consecutive runs have been performed with each 
 	    	Greedy 		& 18215 			& 48 		 & 212 	& 179 \\
 		\hline
 	\end{tabular}
-	\label{tbl:searchresults}
-	\caption{Results from the different search algorithms.}
+	\caption{Results from the different search algorithms.\label{tbl:searchresults}}
 \end{table}
-Another search has been performed with the tree pruning algorithm disables (No removal of deadlock states), to see how big and effect the pruning has on the performance of the solver. The search algorithm used is A*, because it outperformed the other search algorithms.\\
+Another search has been performed with the tree pruning algorithm disabled (No removal of deadlock states), to see how big an effect the pruning has on the performance of the solver. The search algorithm used is A*, because it outperformed the other search algorithms.\\
 \begin{table}[h!]
 	\centering
 	\begin{tabular}{| l | c | c | c | c | }
@@ -23,8 +22,7 @@ Another search has been performed with the tree pruning algorithm disables (No r
 		    A*		& 148097 			& 318 		 & 142 	& 12223 \\
 		\hline
 	\end{tabular}
-	\label{tbl:searchresultsnoprun}
-	\caption{Results from the different search algorithms, when search tree pruning is disabled.}
+	\caption{Results from the different search algorithms, when search tree pruning is disabled.\label{tbl:searchresultsnoprun}}
 \end{table}
 
 
