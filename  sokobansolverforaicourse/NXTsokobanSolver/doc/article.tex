@@ -54,7 +54,7 @@ This report documents the development of a system that can solve a sokoban chall
         \begin{figure}[htp]
             \centering
     	    \includegraphics[scale=0.3]{robot2}
-	        \caption{Picture of the robot in it's current state}\label{fig:robotPic}
+	        \caption{Picture of the robot}\label{fig:robotPic}
         \end{figure} 
 	\subsection{Physical Construction} %Morten  
 	    \label{robot:physicalContruction}
@@ -196,6 +196,7 @@ This report documents the development of a system that can solve a sokoban chall
 %			Block test
 
 	\subsection{Conclusion} %Morten
+	    \label{robot:conclusion}
 	   The completed vehicle was able to perform very well when going straight
 	   and when performing turns in most cases, however turning immediately after a
 	   180 degree turn proved to be very difficult, even though
@@ -213,8 +214,22 @@ This report documents the development of a system that can solve a sokoban chall
 	\input{implementation_details.tex}
 	\subsection{Performance evaluation}
 	\input{performance_evaluation.tex}
-\section{Conclusion}
-\section{Discussion}
+\section{Conclusion and discussion}    
+    The developed system is able to correctly calculate the optimal solution for solving
+    the sokoban challenge, furthermore the robot is able to navigate the board in most
+    aspects, however there is still some challenges remaining with a subset of the directional turning.
+    In section \ref{robot:conclusion} a solution is proposed for solving this problem.\\
+    \\
+    The system was able to outperform the competitors during the competition in
+    placing the first jewel, and up until the first time it had to perform,
+    one the actions from the problematic subset of turning.
+    This was due to a design decision of the robot, where the team aimed for 
+    achieving the highest possible speed, at the cost of an increases risk of
+    not completing the competition.
+    \\\\
+    In hind sight the resources assigned to doing the planner, compared to the
+    robot could have been better. As the robot was more time consuming than
+    first anticipated.
 \bibliographystyle{plain}
 \bibliography{bibtex_refs.bib}
 \appendix
