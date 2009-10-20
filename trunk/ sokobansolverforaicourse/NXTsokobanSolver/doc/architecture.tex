@@ -1,7 +1,7 @@
 The architecture of the system is composed of two separate systems, a planner and a physical robot.
 The planner runs on a PC and is responsible of creating a file with the actual plan, for solving the task at hand. The planner takes a map as input and uses a search-algorithm to find the right path to the goal in a search tree. When the right path is found a file with the robot-navigation-commands is created.
 
-The robot-navigation-command-file contains a string of commands. These commands are up, down, right and left and they are represented as u, d, r and l in the file.
+The robot-navigation-command-file contains a string of commands. These commands are up, down, right, left and turn around, they are represented as 'u', 'd', 'r', 'l' and 'a' in the file.
 
-The file created by the planner is used by the robot to correctly navigate the map as fast as possible. The robots task is to move from one field on the map to another as fast as possible and at the same time follow the line. When i.e. the command received from the file is up the robot turns to adjust its heading, when the heading is not right, and then moves forward one field. The robot itself does not perform any path-finding, but only navigates the map using the commands from the file created by the planner. 
+The file created by the planner is used by the robot to correctly navigate the map as fast as possible. The robots task is to move from one field on the map to another as fast as possible and at the same time follow the line.  The robot itself does not perform any path-finding, but only navigates the map using the commands from the file created by the planner. 
 

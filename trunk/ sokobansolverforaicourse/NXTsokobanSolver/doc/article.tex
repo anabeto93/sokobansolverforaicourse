@@ -25,7 +25,7 @@
             plainpages=false,
             final]{hyperref}
 
-\title{Playing with LEGO}
+\title{Practical application of search algorithms to an NP-hard problem}
 \author{Mikael Moghadam, Kenni Peter Isaksen, Morten S. Laursen}
 
 \begin{document}
@@ -37,7 +37,9 @@
 % style of bibliography it should generate
 %\bibliographystyle{plain}
 %\bibliography{}
+\newpage
 \section{Introduction}
+This report documents the development of a system that can solve a sokoban challenge in a real world environment. The report consists of two parts, the first one concerns the construction of a robot able to traverse a sokoban field given the correct movement commands. The second part describes the development of a practical sokoban solver that is able to generate a command file for the robot, enabling it to solve the sokoban challenge.
 \newpage
 \tableofcontents
 \newpage
@@ -58,12 +60,12 @@
 	    The robot is constructed using two motors which applies force to
 	    each of their front wheels, this allows the robot to steer using skid steering.
 	    In front of the wheels 2 light sensors is placed to detect the line, using
-	    two sensors in place of just one sensor on top of the line allows for a wider
+	    two sensors in place of just one sensor, on top of the line allows for a wider
 	    range of detection scenarios. One sensor would be forced to follow one
 	    of the edges of the line, having two sensors allows for seeing the line
 	    as in the middle (none of the sensors see's the line), slightly to the left (the left sensor see's the
 	    line edge), far to the left (the left sensor see's the line), of cause the same
-	    goes for the other direction. The way line edge and line can be seperated is
+	    goes for the other direction. The way line edge and line can be separated is
 	    because the light sensors measure the amount of reflected light, when the area
 	    scanned by the sensor is partially covered by line, the sensors values also only changes partially,
 	    in other words the sensor measurements are far from binary. Having a higher detection resolution
@@ -71,8 +73,7 @@
 	    time without loosing sensor input.\\
 	    In front of the two sensors another light sensor is placed on the right side of the vehicle,
 	    this sensor is placed very far in front of the vehicle to detect crossing lines as early as possible, to allow
-	    the vehicle to slow down as it cannot brake instantly. The placement of the three light
-	    reflectance sensors is placed as illustrated in figure \ref{fig:lightSensorPlacement}
+	    the vehicle to slow down as it cannot brake instantly. The placement of the three optical sensors are as illustrated in figure \ref{fig:lightSensorPlacement}
 	    \begin{figure}[htp]
             \centering
     	    \includegraphics[scale=0.45]{lightSensorPlacement}
