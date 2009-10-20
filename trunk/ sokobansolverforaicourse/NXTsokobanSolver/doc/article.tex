@@ -1,5 +1,5 @@
 % article document class appropriate for small (<100 pages) documents
-\documentclass[draft, english, a4paper]{article}
+\documentclass[final, english, a4paper]{article}
 
 % Packages provide additional functionality
 %\usepackage{url}
@@ -14,7 +14,7 @@
             colorlinks=false,
             pdfduplex=DuplexFlipLongEdge,
             pdfborder={0 0 0},
-            pdftitle={Playing with LEGO},
+            pdftitle={Practical application of search algorithms to an NP-hard problem},
             pdfauthor={Mikael Moghadam, Kenni Peter Isaksen, Morten S. Laursen,
                 Robot Technology,
                 SDU,
@@ -24,6 +24,7 @@
             pdfkeywords={LEGO, Sokoban, line follow},
             plainpages=false,
             final]{hyperref}
+\usepackage{placeins}
 
 \title{Practical application of search algorithms to an NP-hard problem}
 \author{Mikael Moghadam, Kenni Peter Isaksen, Morten S. Laursen}
@@ -59,21 +60,21 @@ This report documents the development of a system that can solve a sokoban chall
 	    \label{robot:physicalContruction}
 	    The robot is constructed using two motors which applies force to
 	    each of their front wheels, this allows the robot to steer using skid steering.
-	    In front of the wheels 2 light sensors is placed to detect the line, using
-	    two sensors in place of just one sensor, on top of the line allows for a wider
-	    range of detection scenarios. One sensor would be forced to follow one
-	    of the edges of the line, having two sensors allows for seeing the line
+	    In front of the wheels two light sensors are placed to detect the line. Using
+	    two sensors, in place of just one sensor, on top of the line allows for a wider
+	    range of detection scenarios. If only one sensor was used the robot would be forced to follow one
+	    of the edges of the line. Having two sensors allows for seeing the line
 	    as in the middle (none of the sensors see's the line), slightly to the left (the left sensor see's the
-	    line edge), far to the left (the left sensor see's the line), of cause the same
-	    goes for the other direction. The way line edge and line can be separated is
-	    because the light sensors measure the amount of reflected light, when the area
-	    scanned by the sensor is partially covered by line, the sensors values also only changes partially,
-	    in other words the sensor measurements are far from binary. Having a higher detection resolution
-	    allows for more fine grained controls, and because the sensors cover a larger area allows for more recovery
-	    time without loosing sensor input.\\
-	    In front of the two sensors another light sensor is placed on the right side of the vehicle,
-	    this sensor is placed very far in front of the vehicle to detect crossing lines as early as possible, to allow
-	    the vehicle to slow down as it cannot brake instantly. The placement of the three optical sensors are as illustrated in figure \ref{fig:lightSensorPlacement}
+	    line edge), far to the left (the left sensor see's the line), of course the same
+	    goes for the other direction. Line edges can be detected
+	    because the light sensors measure the amount of reflected light. 
+	    When the area scanned by the sensor is partially covered by line, the sensors values also only changes partially. 
+	    Having more than one sensor results in a larger coverage area and a higher detection resolution,
+	    which allows for more fine grained control, and recovery of a larger misplacement of the robot.
+
+	    In front of the two sensors, on the right side of the vehicle, another light sensor is placed.
+	    This sensor is placed in front of the vehicle in order to detect crossing lines as early as possible, to allow
+	    the vehicle to slow down, as it cannot stop instantly. The placement of the three optical sensors are as illustrated in figure \ref{fig:lightSensorPlacement}
 	    \begin{figure}[htp]
             \centering
     	    \includegraphics[scale=0.45]{lightSensorPlacement}
@@ -81,22 +82,25 @@ This report documents the development of a system that can solve a sokoban chall
         \end{figure}	      
 	\subsection{Robot architecture}
 	    The software for the robot is implemented as a statemachine, which
-	    interprets the commands given in the text file from the planner.
+	    interprets the commands given from the planner.
 	    A statechart of the statemachine is shown in figure \ref{fig:RobotStateChart}
+	    The states is described in the following.
 	    \begin{figure}[htp]
             \centering
     	    \includegraphics[scale=0.6]{TopLevelStateChart}
 	        \caption{Statemachine of the Sokoban robot}\label{fig:RobotStateChart}
         \end{figure}
+        \FloatBarrier
 	    \subsubsection{Follow line}
 	        The line following state has the responsibility of keeping the robot
 		    constantly on the line using the sensors to allow for precise navigation.\\
 		    \\
-		    On figure \ref{fig:sensor_measurements} a plot of what the sensors
-		    measures when driving on a line has been created. It is clear when
-		    looking at the plot that the signal does not contain a lot of higher
-		    frequency components and will therefore not achieve much from being filtered,
-		    except less phasemargin because of the filterdelay. These data was measured
+		    On figure \ref{fig:sensor_measurements}, a plot of what the sensors
+		    measures when driving on a line is shown. It is clear when
+		    looking at the plot that the signals do not contain a lot of higher
+		    frequency components and will therefore not be improved much from being filtered,
+		    it would however cause less phasemargin because of the filterdelay. 
+		    These data was measured
 		    doing a evaluation of a proportional feedback control system.
 		    \\
 		    \begin{figure}[htp]
@@ -105,30 +109,32 @@ This report documents the development of a system that can solve a sokoban chall
 	            \caption{Raw samples of sensor measurements}\label{fig:sensor_measurements}
             \end{figure}
             \\
+            
             \paragraph{Statemachine based}
-            For making the control loop two different implementations has been
-            tested, one using a simple state machine based solution, where the
+            For making the control loop, two different implementations have been
+            tested. One using a simple state machine based solution, where the
             state machine tries to assess the position of the line as either 
             in the middle (none of the sensors see's the line), slightly to the left (the left sensor see's the
 	         line edge), far to the left (the left sensor see's the line)
-	        then from this approximation of the state of the relationship between
+	        then from this approximation of the relationship between
 	        the line and the robot an action is performed by lowering the speed
-	        on the wheel to close to the line according to the approximated state.\\
+	        on the wheel too close to the line according to the approximation.\\
             \\
             \paragraph{PD-feedback based}
-            Another option which has been tested is making a simple PD control loop
-            using the light sensors, as the sensors are not entirely binary,
-            but has a slight transition as more and more of the sensed area becomes
-            line, it increases, a correction based on these small increases can 
-            be seen as the oscillation between sample 100 - 200 on figure \ref{fig:sensor_measurements}
-            Whereas the state machine based approach does not start correcting before reaching a threshold value.\\
+            Another option which has been tested is making a PD control loop.
+            where the state machine based approach does not start correcting before reaching a threshold value.\\
+            On figure \ref{fig:sensor_measurements} between sample 100 - 200,
+            the sensed values can be seen during a correction using the PD-regulator.
+            This causes the regulator to correct for the measured error 
+            continuously, where the state machine based regulator, only corrects on state
+            changes.
             \\
             Having implemented both solutions on the vehicle the control loop based
             solution was chosen as it had clearly the best performance. This
             was proven by allowing both algorithms to follow a 2m stretch of
             straight line for 100 runs and comparing the amount of errors of both algorithms.
             \\
-            In this test the statemachine based method failed in 13\% of the
+            In this test the state machine based method failed in 13\% of the
             cases, where the PD regulator failed in only 2\% of the cases.
              
             
@@ -145,11 +151,12 @@ This report documents the development of a system that can solve a sokoban chall
 %			Block design / bird perspective flow chart 
 %			Block test
 	    \subsubsection{Turn left and turn right}
-	        The turn states makes the robot turn around,
+	        The turn states makes the robot turn it's heading to
+	        the right or the left,
 	        it does this by using the tachometer for feedback.
 	        To achieve the correct turning radius a combination of turning one
-	        wheel forward while the other is turned backwards is used. This
-	        can be seen from the following pseudo code.
+	        wheel forward while the other is turning backwards is used. This
+	        can be seen from the example in listing \ref{code:turnleft}.
 	        \begin{lstlisting}[language=Ruby, frame=single, basicstyle=\small, caption={TurnLeft Pseudo example}, label={code:turnleft}]
 	        reset Tacho
 	        until tachoCount > 1800 do:
@@ -158,7 +165,7 @@ This report documents the development of a system that can solve a sokoban chall
 	        return
 	        \end{lstlisting}
 	    \subsubsection{Turn around}
-	        Turn around is more advanced than the simple turn left and right
+	        Turning the robot 180 degrees is more advanced than the simple turn left and right
 	        states, this is because the requirements for a high precision turn is
 	        higher, it therefore consists of a number of steps which it must pass
 	        through.
@@ -168,11 +175,10 @@ This report documents the development of a system that can solve a sokoban chall
 	            \item Turn until the frontmost sensor see a line
 	            \item Turn the last bit using the tacho
 	        \end{enumerate}
-	        As the starting inertia of the robot is relatively constant every time
-	        and the remaining angular distance is also fairly constant, 
-	        it works relatively accurately.
-	        The algorithm was first realized in this way towards the end of the project
-	        and therefore comprehensive testing on it's reliability was not performed.
+	        The amount of tachometer ticks needed to perform the remainder of the 180 degree revolution (from step 3 to step 4) is fairly constant, and therefore be implemented as a constant value.
+	        This algorithm turns out to work accurately, but was first devised
+	         towards the end of the project
+	        and therefore comprehensive testing and tuning was not performed.
 	    \subsubsection{Read command}
 	        This state reads the next character from the text file and 
 	        transitions to the next state.
@@ -191,13 +197,13 @@ This report documents the development of a system that can solve a sokoban chall
 
 	\subsection{Conclusion} %Morten
 	   The completed vehicle was able to perform very well when going straight
-	   and when performing turns in most cases, however turning right after a
-	   180 degree turn proved to be very difficult for the vehicle, even though
-	   the initial position after the 180 degree turn varied very little, the 
-	   following turn proved difficult. If time had permitted it this could be 
+	   and when performing turns in most cases, however turning immediately after a
+	   180 degree turn proved to be very difficult, even though
+	   the initial position after the 180 degree turn varied very little.
+       If time had permitted it this could be 
 	   improved a lot by relying more on the optical sensors doing the turn.
 	   It is however noteworthy that the vehicle proved to be the fastest vehicle
-	   at placing the first jewel in the competition, and during the competition for ten following trials
+	   at placing the first jewel in the competition, and during the competition for ten consecutive trials
 	   performed without error until the first turn following a 180 degree turn, where it failed consequently.
 \section{Planner description}
     \input{sokoban_problem_discussion.tex}
