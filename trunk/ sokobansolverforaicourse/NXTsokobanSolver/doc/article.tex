@@ -14,7 +14,7 @@
             colorlinks=false,
             pdfduplex=DuplexFlipLongEdge,
             pdfborder={0 0 0},
-            pdftitle={Practical application of search algorithms to an NP-hard problem},
+            pdftitle={Application of search algorithms in solving an NP-hard problem},
             pdfauthor={Mikael Moghadam, Kenni Peter Isaksen, Morten S. Laursen,
                 Robot Technology,
                 SDU,
@@ -26,7 +26,7 @@
             final]{hyperref}
 \usepackage{placeins}
 
-\title{Practical application of search algorithms to an NP-hard problem}
+\title{Application of search algorithms in solving an NP-hard problem}
 \author{Mikael Moghadam, Kenni Peter Isaksen, Morten S. Laursen}
 
 \begin{document}
@@ -121,8 +121,8 @@ This report documents the development of a system that can solve a sokoban chall
 	        on the wheel too close to the line according to the approximation.\\
             \\
             \paragraph{PD-feedback based}
-            Another option which has been tested is making a PD control loop.
-            where the state machine based approach does not start correcting before reaching a threshold value.\\
+            Another option which has been tested for the line following, is a PD control loop.
+            The PD control loop has the advantage of potentially providing a much smoother and precise level of control, contrast the state machine based approach which is more jittery because it does not start correcting before reaching a threshold value.\\
             On figure \ref{fig:sensor_measurements} between sample 100 - 200,
             the sensed values can be seen during a correction using the PD-regulator.
             This causes the regulator to correct for the measured error 
@@ -166,19 +166,19 @@ This report documents the development of a system that can solve a sokoban chall
 	        \end{lstlisting}
 	    \subsubsection{Turn around}
 	        Turning the robot 180 degrees is more advanced than the simple turn left and right
-	        states, this is because the requirements for a high precision turn is
-	        higher, it therefore consists of a number of steps which it must pass
-	        through.
+	        states, because the precision requirements for this turn are
+	        higher. It therefore consists of a number of steps which it must pass
+	        through:
 	        \begin{enumerate}
 	            \item Back off to avoid hitting the jewel when turning
 	            \item Turn $160^o$ around based on the tachometer
 	            \item Turn until the frontmost sensor see a line
 	            \item Turn the last bit using the tacho
 	        \end{enumerate}
-	        The amount of tachometer ticks needed to perform the remainder of the 180 degree revolution (from step 3 to step 4) is fairly constant, and therefore be implemented as a constant value.
+	        The amount of tachometer ticks needed to perform the remainder of the 180 degree revolution (from step 3 to step 4) is fairly constant, and is therefore implemented as a constant value.
 	        This algorithm turns out to work accurately, but was first devised
 	         towards the end of the project
-	        and therefore comprehensive testing and tuning was not performed.
+	        and therefore comprehensive testing and tuning could not performed.
 	    \subsubsection{Read command}
 	        This state reads the next character from the text file and 
 	        transitions to the next state.
@@ -199,13 +199,13 @@ This report documents the development of a system that can solve a sokoban chall
 	    \label{robot:conclusion}
 	   The completed vehicle was able to perform very well when going straight
 	   and when performing turns in most cases, however turning immediately after a
-	   180 degree turn proved to be very difficult, even though
-	   the initial position after the 180 degree turn varied very little.
+	   180 degree turnaround proved to be very difficult, even though
+	   the final position after the 180 degree turnaround varied very little.
        If time had permitted it this could be 
-	   improved a lot by relying more on the optical sensors doing the turn.
+	   improved a lot by relying more on the optical sensors when performing the turn.
 	   It is however noteworthy that the vehicle proved to be the fastest vehicle
 	   at placing the first jewel in the competition, and during the competition for ten consecutive trials
-	   performed without error until the first turn following a 180 degree turn, where it failed consequently.
+	   performed without error until the first turn following a 180 degree turnaround, where it failed consequently.
 \section{Planner description}
     \input{sokoban_problem_discussion.tex}
 	\subsection{Discussion of search algorithms} %Mikael
@@ -224,7 +224,7 @@ This report documents the development of a system that can solve a sokoban chall
     placing the first jewel, and up until the first time it had to perform,
     one the actions from the problematic subset of turning.
     This was due to a design decision of the robot, where the team aimed for 
-    achieving the highest possible speed, at the cost of an increases risk of
+    achieving the highest possible speed, at the cost of an increased risk of
     not completing the competition.
     \\\\
 %\bibliographystyle{plain}
